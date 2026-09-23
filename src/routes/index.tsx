@@ -281,7 +281,7 @@ function Home() {
           </div>
           <div className="flex flex-col justify-between gap-4 pt-8 font-ui text-[15px] text-primary-foreground/60 md:flex-row">
             <p>© 2026 svaraa. All rights reserved.</p>
-            <p><a href="/admin" className="mr-6">Admin</a><a href="https://superstar.wtf/shawm" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-primary-foreground/80">Tech by Shawm at Superstar Tech Inc <ArrowUpRight size={15} /></a></p>
+            <p><a href="https://superstar.wtf/shawm" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-primary-foreground/80">Tech by Shawm at Superstar Tech Inc <ArrowUpRight size={15} /></a></p>
           </div>
         </div>
       </footer>
