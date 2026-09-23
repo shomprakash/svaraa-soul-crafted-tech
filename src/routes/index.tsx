@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowDown, ArrowLeft, ArrowRight, Check, Menu, X } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Menu, X } from "lucide-react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Brand, SvaraaEmblem } from "@/components/Brand";
-import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import hero from "@/assets/svaraa-hero.jpg";
 import products from "@/assets/svaraa-products.jpg";
@@ -20,9 +19,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "svaraa | Wear the stillness you seek" },
-      { name: "description", content: "Svaraa is a sacred wearable companion for prayer, connection, memory and peace of mind." },
+      { name: "description", content: "svaraa is a sacred wearable companion for prayer, connection, memory and peace of mind, crafted in India." },
       { property: "og:title", content: "svaraa | Wear the stillness you seek" },
-      { property: "og:description", content: "An intelligent sacred wearable, crafted like an heirloom and engineered with care." },
+      { property: "og:description", content: "A mala pendant and wristband that carry your practice, your family's voice and quiet protection through every day." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -32,99 +31,264 @@ export const Route = createFileRoute("/")({
 });
 
 const features = [
-  { name: "Recite", line: "Bringing sacred rhythms to daily life.", body: "Morning slokas, pooja chants and evening mantras begin at the time you choose, shaped around your own practice.", image: recite },
-  { name: "Respond", line: "A familiar voice, always by your side.", body: "Ask about the weather, the day or anything on your mind. Svaraa responds naturally, with the warmth of a voice you know.", image: respond },
-  { name: "Remind", line: "Care that arrives gently.", body: "Spoken prompts for medicine, hydration, appointments and the small routines that help each day flow well.", image: remind },
-  { name: "Rescue", line: "Quiet protection when it matters.", body: "Fall detection and a voice-triggered SOS can reach family without searching for a phone or pressing a small button.", image: rescue },
-  { name: "Recall", line: "An extended memory for life's details.", body: "Keep important moments and everyday context close, from a family birthday to the last visit to Tirupati.", image: recall },
-  { name: "Repository", line: "The world, ready to be heard.", body: "Listen to answers about scripture, sport, cinema and news, while keeping personal records within easy reach.", image: repository },
-  { name: "Riddle", line: "A sharper mind, through play.", body: "Daily spoken riddles, word puzzles and trivia bring a little challenge and a great deal of joy.", image: riddle },
+  { name: "Recite", dev: "पाठ", line: "Sacred rhythm, on your hours.", body: "Morning slokas, pooja chants and evening mantras begin at the time you choose, shaped around your own practice and tradition.", image: recite },
+  { name: "Respond", dev: "उत्तर", line: "A familiar voice, always near.", body: "Ask about the weather, the day or anything on your mind. svaraa answers in the warmth of a voice you already love.", image: respond },
+  { name: "Remind", dev: "स्मरण", line: "Care that arrives gently.", body: "Spoken prompts for medicine, water, appointments and the small routines that help a day flow well.", image: remind },
+  { name: "Rescue", dev: "रक्षा", line: "Quiet protection, when it matters.", body: "Fall detection and a spoken call for help reach family at once. No phone to find, no small button to press.", image: rescue },
+  { name: "Recall", dev: "स्मृति", line: "A second memory for life's details.", body: "Keep the moments that matter close, from a grandchild's birthday to the last darshan at Tirupati.", image: recall },
+  { name: "Repository", dev: "कोश", line: "The world, ready to be heard.", body: "Scripture, cricket, cinema and the news, spoken aloud. Your personal and health records, always within reach.", image: repository },
+  { name: "Riddle", dev: "पहेली", line: "A sharper mind, through play.", body: "Daily spoken riddles, word games and trivia bring a little challenge and a great deal of joy.", image: riddle },
 ];
+
+function useReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); } }), { threshold: 0.15 });
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+}
 
 function Home() {
   const [active, setActive] = useState(0);
   const [menu, setMenu] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [fontScale, setFontScale] = useState(100);
-  const feature = features[active] ?? features[0];
-  if (!feature) return null;
+  const glow = useRef<HTMLDivElement>(null);
+  useReveal();
+
+  useEffect(() => {
+    const move = (e: PointerEvent) => { if (glow.current) glow.current.style.transform = `translate(${e.clientX - 200}px, ${e.clientY - 200}px)`; };
+    window.addEventListener("pointermove", move);
+    return () => window.removeEventListener("pointermove", move);
+  }, []);
+
+  const feature = features[active] ?? features[0]!;
+  const go = (d: number) => setActive((a) => (a + d + 7) % 7);
 
   async function submitWaitlist(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault(); setStatus("sending");
-    const form = new FormData(event.currentTarget);
+    event.preventDefault();
+    const formEl = event.currentTarget;
+    setStatus("sending");
+    const form = new FormData(formEl);
     const payload = { name: String(form.get("name") ?? "").trim(), phone: String(form.get("phone") ?? "").trim(), email: String(form.get("email") ?? "").trim() };
     if (payload.name.length < 2 || payload.phone.length < 7 || !/^\S+@\S+\.\S+$/.test(payload.email)) { setStatus("error"); return; }
     const { error } = await supabase.from("waitlist_leads").insert(payload);
     if (error) { setStatus("error"); return; }
-    event.currentTarget.reset(); setStatus("done");
+    formEl.reset(); setStatus("done");
   }
 
+  const nav = [["#companion", "The companion"], ["#why", "Why svaraa"], ["#seven", "Seven svaraas"], ["#makers", "Makers"]];
+
   return (
-    <div style={{ fontSize: `${fontScale}%` }}>
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/95 backdrop-blur-sm">
-        <div className="page-shell flex h-[72px] items-center justify-between lg:h-[88px]">
-          <a href="#top" aria-label="Svaraa home"><Brand /></a>
-          <nav className="hidden items-center gap-7 font-ui text-[14px] uppercase lg:flex" aria-label="Main navigation">
-            <a href="#companion">The companion</a><a href="#seven">Seven svaraas</a><a href="#philosophy">Why svaraa</a><a href="#makers">Makers</a>
+    <div style={{ fontSize: `${fontScale}%` }} className="relative">
+      <div ref={glow} aria-hidden className="pointer-glow" />
+
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
+        <div className="page-shell flex h-[76px] items-center justify-between">
+          <a href="#top" aria-label="svaraa home"><Brand /></a>
+          <nav className="hidden items-center gap-9 font-ui text-[15px] lg:flex" aria-label="Main">
+            {nav.map(([h, l]) => <a key={h} href={h} className="link-sweep">{l}</a>)}
           </nav>
-          <div className="hidden items-center gap-4 lg:flex">
-            <div className="flex items-baseline gap-2 font-ui text-sm" aria-label="Text size">
-              {[100,112.5,125].map((size, i) => <button key={size} onClick={() => setFontScale(size)} className={fontScale === size ? "text-gold-deep underline" : "text-muted-foreground"}>A{i ? "+".repeat(i) : ""}</button>)}
+          <div className="hidden items-center gap-6 lg:flex">
+            <div className="flex items-baseline gap-2.5 font-ui text-[15px]" role="group" aria-label="Text size">
+              {[100, 112.5, 125].map((s, i) => <button key={s} onClick={() => setFontScale(s)} aria-pressed={fontScale === s} className={fontScale === s ? "text-primary underline decoration-gold underline-offset-4" : "text-muted-foreground"}>A{"+".repeat(i)}</button>)}
             </div>
-            <a href="#waitlist" className="svaraa-button svaraa-button-primary inline-flex items-center">Join waitlist</a>
+            <a href="#waitlist" className="btn btn-primary">Join the waitlist</a>
           </div>
-          <button className="lg:hidden" aria-label="Open menu" onClick={() => setMenu(!menu)}>{menu ? <X /> : <Menu />}</button>
+          <button className="flex items-center gap-2 font-ui lg:hidden" aria-label="Menu" onClick={() => setMenu(!menu)}>{menu ? <X /> : <Menu />}Menu</button>
         </div>
-        {menu && <nav className="flex flex-col border-t border-border bg-background p-6 font-ui uppercase lg:hidden"><a className="py-4" href="#companion" onClick={()=>setMenu(false)}>The companion</a><a className="py-4" href="#seven" onClick={()=>setMenu(false)}>Seven svaraas</a><a className="py-4" href="#philosophy" onClick={()=>setMenu(false)}>Why svaraa</a><a className="py-4" href="#waitlist" onClick={()=>setMenu(false)}>Join waitlist</a></nav>}
+        {menu && <nav className="flex flex-col border-t border-border bg-background px-6 pb-6 font-ui text-lg lg:hidden">{[...nav, ["#waitlist", "Join the waitlist"]].map(([h, l]) => <a key={h} className="border-b border-border py-4" href={h} onClick={() => setMenu(false)}>{l}</a>)}</nav>}
       </header>
 
       <main id="top">
-        <section className="relative min-h-[92vh] overflow-hidden pt-[72px] lg:pt-[88px]">
-          <img src={hero} alt="A woman wearing the Svaraa pendant in a sunlit Indian courtyard" width={1536} height={1152} className="absolute inset-0 size-full object-cover object-[65%_center]" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/5" />
-          <div className="page-shell relative flex min-h-[calc(92vh-72px)] items-end pb-20 pt-32 lg:min-h-[calc(92vh-88px)] lg:items-center lg:pb-0 lg:pt-0">
-            <div className="reveal max-w-[710px]">
-              <p className="eyebrow mb-5">A wearable practice</p>
-              <h1 className="text-[3.4rem] leading-[.96] text-primary sm:text-7xl lg:text-[5.6rem]">Wear the stillness<br />you seek.</h1>
-              <p className="mt-7 max-w-[590px] text-xl leading-relaxed text-foreground lg:text-2xl">A sacred everyday companion for prayer, presence and peace of mind. Crafted like an heirloom. Engineered with care.</p>
-              <a href="#companion" className="mt-9 inline-flex items-center gap-3 font-ui text-sm uppercase text-gold-deep">Discover svaraa <ArrowDown size={17} /></a>
+        {/* HERO */}
+        <section className="relative overflow-hidden bg-background pt-[76px]">
+          <div aria-hidden className="jali absolute inset-0 opacity-60" />
+          <span aria-hidden className="devanagari pointer-events-none absolute -right-10 top-24 select-none text-[22rem] leading-none text-gold/10 lg:text-[30rem]">स्वर</span>
+          <div className="page-shell relative grid min-h-[calc(100svh-76px)] items-center gap-12 py-16 lg:grid-cols-[1.05fr_.95fr] lg:gap-20">
+            <div>
+              <p className="eyebrow reveal">A wearable practice <span className="mx-2 text-gold">|</span> Made in India</p>
+              <h1 className="reveal mt-7 text-[3.6rem] leading-[.92] text-primary sm:text-[5rem] lg:text-[6.4rem]" style={{ animationDelay: "80ms" }}>
+                Wear the<br /><em className="font-light text-gold-deep">stillness</em><br />you seek.
+              </h1>
+              <div className="hairline reveal mt-10 w-40" style={{ animationDelay: "160ms" }} />
+              <p className="reveal mt-8 max-w-[520px] text-xl leading-[1.7] text-foreground/85 lg:text-[1.35rem]" style={{ animationDelay: "240ms" }}>
+                A sacred companion worn as a rudraksha mala or a wristband. It keeps your prayers on time, your family's voice close and help within a word.
+              </p>
+              <div className="reveal mt-10 flex flex-wrap items-center gap-5" style={{ animationDelay: "320ms" }}>
+                <a href="#waitlist" className="btn btn-primary">Reserve your svaraa</a>
+                <a href="#seven" className="btn btn-ghost">See the seven svaraas <ArrowRight size={18} /></a>
+              </div>
+            </div>
+            <div className="reveal relative mx-auto w-full max-w-[520px]" style={{ animationDelay: "200ms" }}>
+              <div className="arch-outline absolute -inset-4" aria-hidden />
+              <img src={hero} alt="A woman in an ivory kurta wearing the svaraa pendant in a sunlit courtyard" width={1536} height={1152} className="arch relative aspect-[4/5] w-full object-cover object-[70%_center]" />
+              <div className="absolute -bottom-6 -left-6 hidden border border-border bg-background/95 px-6 py-5 shadow-[0_20px_50px_-20px_var(--primary)] backdrop-blur sm:block">
+                <p className="font-ui text-[15px] text-muted-foreground">Battery</p>
+                <p className="font-display text-4xl text-primary">7 days</p>
+              </div>
             </div>
           </div>
         </section>
 
-        <div className="bg-champagne"><div className="page-shell grid py-6 md:grid-cols-3">
-          {["Sacred jewellery, not medical tech", "Waterproof for continuous wear", "Designed in India, for Indian lives"].map((item) => <div key={item} className="flex items-center gap-3 border-border py-3 md:border-r md:px-7 first:pl-0 last:border-0"><Check size={18} className="text-gold-deep"/><span>{item}</span></div>)}
-        </div></div>
+        {/* TRUST */}
+        <div className="border-y border-border bg-champagne">
+          <div className="page-shell grid grid-cols-2 gap-y-6 py-8 text-center md:grid-cols-4">
+            {[["IP68", "Wear it to the ghat"], ["7 days", "On a single charge"], ["No screen", "Nothing to learn"], ["Hindi + 9", "Indian languages"]].map(([a, b]) => (
+              <div key={a} className="md:border-r md:border-border md:last:border-0"><p className="font-display text-3xl text-primary">{a}</p><p className="font-ui text-[15px] text-muted-foreground">{b}</p></div>
+            ))}
+          </div>
+        </div>
 
-        <section id="companion" className="section-pad bg-background">
-          <div className="page-shell grid items-center gap-16 lg:grid-cols-2">
-            <div className="relative"><SvaraaEmblem className="absolute -left-16 -top-14 size-64 text-gold opacity-[.08]"/><img src={products} alt="Svaraa mala pendant and wrist wearable" width={1408} height={1408} loading="lazy" className="arch gold-frame relative aspect-square w-full object-cover"/></div>
-            <div><p className="eyebrow">One companion. Two forms.</p><h2 className="mt-4 text-5xl leading-tight text-primary lg:text-6xl">Made to belong in your life.</h2><p className="mt-7 max-w-[610px] text-xl">Wear Svaraa as a sacred mala pendant or an elegant wrist band. Both feel familiar from the first day, with no screen to learn and no routine to interrupt.</p>
-              <div className="mt-10 grid gap-8 sm:grid-cols-2"><div className="border-t border-gold pt-5"><h3 className="text-3xl text-primary">Sacred pendant</h3><p className="mt-3 text-muted-foreground">A discreet companion set within a traditional mala, close to the voice and heart.</p></div><div className="border-t border-gold pt-5"><h3 className="text-3xl text-primary">Comfort wrist band</h3><p className="mt-3 text-muted-foreground">Lightweight, waterproof and made for continuous everyday wear.</p></div></div>
+        {/* COMPANION */}
+        <section id="companion" className="section-pad">
+          <div className="page-shell">
+            <div data-reveal className="grid items-end gap-8 lg:grid-cols-2">
+              <div><p className="numeral">01</p><p className="eyebrow mt-2">One companion, two forms</p><h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">Made to belong,<br />not to be learned.</h2></div>
+              <p className="max-w-[520px] text-xl text-foreground/80 lg:justify-self-end">No screens, no menus, no charging cables tangled on the bedside table. You speak, svaraa listens. That is the whole manual.</p>
+            </div>
+            <div className="mt-16 grid gap-8 lg:grid-cols-[1.3fr_1fr]">
+              <div data-reveal className="group relative overflow-hidden rounded-[4px]"><img src={products} alt="svaraa mala pendant and wristband on carved sandstone" width={1408} height={1408} loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.03]" /></div>
+              <div className="grid gap-8">
+                {[["The mala", "A rudraksha mala with a bronze-set pendant that rests close to the voice and heart. Worn to the temple, the dinner table and to sleep."], ["The wristband", "Soft woven strap, the same quiet dial. For those who prefer it at the wrist, or wear both."]].map(([t, d], i) => (
+                  <article data-reveal key={t} className="lift-card flex flex-col justify-between border border-border bg-pearl p-8 lg:p-10" style={{ transitionDelay: `${i * 80}ms` }}>
+                    <p className="font-ui text-[15px] text-gold-deep">Form {i + 1}</p>
+                    <div><h3 className="mt-6 text-4xl text-primary">{t}</h3><p className="mt-3 text-foreground/75">{d}</p></div>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        <section id="philosophy" className="section-pad bg-pearl text-center"><div className="page-shell"><p className="eyebrow">Why svaraa</p><h2 className="mx-auto mt-4 max-w-[900px] text-5xl leading-tight text-primary lg:text-7xl">Distance should never feel like absence.</h2><p className="mx-auto mt-7 max-w-[760px] text-xl lg:text-2xl">For parents who value independence. For children who want to remain close. For younger Indians who want spiritual discipline to live beyond an app. Svaraa turns care and ritual into a quiet presence that travels with you.</p></div></section>
-
-        <section id="seven" className="section-pad overflow-hidden bg-background">
-          <div className="page-shell mb-12 flex items-end justify-between"><div><p className="eyebrow">The seven svaraas</p><h2 className="mt-4 text-5xl text-primary lg:text-7xl">A fuller rhythm for every day.</h2></div><div className="hidden gap-3 sm:flex"><Button variant="outline" size="icon" aria-label="Previous feature" onClick={()=>setActive((active+6)%7)}><ArrowLeft/></Button><Button variant="primary" size="icon" aria-label="Next feature" onClick={()=>setActive((active+1)%7)}><ArrowRight/></Button></div></div>
-          <div className="feature-active relative h-[70vh] min-h-[580px] w-full overflow-hidden bg-aubergine-deep">
-            <img key={feature.name} src={feature.image} alt={`${feature.name} by Svaraa`} width={1200} height={800} loading="lazy" className="feature-image absolute inset-0 size-full object-cover"/>
-            <div className="absolute inset-0 bg-gradient-to-t from-aubergine-deep via-aubergine-deep/15 to-transparent"/>
-            <div className="page-shell absolute inset-x-0 bottom-0 pb-10 text-primary-foreground lg:pb-14"><p className="font-display text-3xl text-gold-light">0{active+1}</p><h3 className="mt-2 text-6xl lg:text-8xl">{feature.name}</h3><p className="mt-2 font-display text-2xl italic text-gold-light lg:text-3xl">{feature.line}</p><p className="mt-4 max-w-[680px] text-lg text-primary-foreground/90">{feature.body}</p><div className="mt-7 flex items-center gap-3 sm:hidden"><Button variant="gold" size="icon" aria-label="Previous feature" onClick={()=>setActive((active+6)%7)}><ArrowLeft/></Button><Button variant="gold" size="icon" aria-label="Next feature" onClick={()=>setActive((active+1)%7)}><ArrowRight/></Button></div></div>
+        {/* WHY */}
+        <section id="why" className="section-pad relative overflow-hidden bg-pearl">
+          <SvaraaEmblem className="absolute -left-40 top-1/2 size-[560px] -translate-y-1/2 text-gold opacity-[.07]" />
+          <div className="page-shell relative">
+            <div data-reveal className="max-w-[980px]">
+              <p className="numeral">02</p><p className="eyebrow mt-2">Why svaraa</p>
+              <h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-[5.2rem]">Distance should never<br />feel like <em className="text-gold-deep">absence.</em></h2>
+            </div>
+            <div className="mt-20 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
+              {[["For parents", "who have earned their independence and intend to keep it. Their rituals, their pace, their home."], ["For their children", "in Pune, Dubai or Boston, who want to be near without hovering. A voice at the right hour. A call when it counts."], ["For the young seeker", "who wants discipline to live somewhere quieter than an app. Practice that stays on the body, not the phone."]].map(([t, d], i) => (
+                <div data-reveal key={t} className="bg-pearl p-8 lg:p-12" style={{ transitionDelay: `${i * 80}ms` }}>
+                  <p className="font-display text-6xl italic text-gold">{["i", "ii", "iii"][i]}</p>
+                  <h3 className="mt-6 text-3xl text-primary">{t}</h3>
+                  <p className="mt-3 text-foreground/75">{d}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="page-shell mt-6 flex gap-2" aria-label="Select feature">{features.map((item,index)=><button key={item.name} onClick={()=>setActive(index)} className={`h-1 flex-1 ${index===active ? "bg-primary" : "bg-border"}`} aria-label={`Show ${item.name}`}/>)}</div>
         </section>
 
-        <section className="section-pad bg-champagne"><div className="page-shell grid items-center gap-14 lg:grid-cols-[1.15fr_.85fr]"><div><p className="eyebrow">Quietly advanced</p><h2 className="mt-4 text-5xl leading-tight text-primary lg:text-7xl">Ancient rhythms.<br />Frontier intelligence.</h2><p className="mt-7 max-w-[680px] text-xl">Powered by the world's leading frontier models and trained for use in a post-AI world. The technology listens, remembers and responds with precision, while the experience remains unmistakably human.</p></div><div className="border-y border-gold py-10"><p className="font-display text-4xl italic text-primary">Technology should disappear into the ritual, not compete with it.</p></div></div></section>
+        {/* SEVEN */}
+        <section id="seven" className="section-pad">
+          <div className="page-shell mb-12 flex flex-wrap items-end justify-between gap-8" data-reveal>
+            <div><p className="numeral">03</p><p className="eyebrow mt-2">The seven svaraas</p><h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">Seven notes.<br />One quiet day.</h2></div>
+            <div className="flex items-center gap-4">
+              <span className="font-ui text-lg text-muted-foreground"><span className="text-primary">0{active + 1}</span> / 07</span>
+              <button onClick={() => go(-1)} aria-label="Previous svaraa" className="round-btn"><ArrowLeft /></button>
+              <button onClick={() => go(1)} aria-label="Next svaraa" className="round-btn round-btn-solid"><ArrowRight /></button>
+            </div>
+          </div>
 
-        <section id="makers" className="section-pad bg-background"><div className="page-shell"><p className="eyebrow">Built by</p><h2 className="mt-4 max-w-[760px] text-5xl leading-tight text-primary lg:text-6xl">Two Indian-origin graduates doing cool things with superior technology in their Ivy League dorms.</h2><div className="mt-14 grid gap-8 md:grid-cols-2">{[[founder01,"Founder 01"],[founder02,"Founder 02"]].map(([img,name])=><article key={name} className="grid items-center gap-7 border border-border bg-pearl p-5 sm:grid-cols-[180px_1fr]"><img src={img} alt={`Symbolic technology avatar for ${name}`} width={816} height={816} loading="lazy" className="aspect-square w-full object-cover"/><div><p className="eyebrow">The makers</p><h3 className="mt-2 text-4xl text-primary">{name}</h3><p className="mt-3 text-muted-foreground">Identity and details to follow.</p></div></article>)}</div></div></section>
+          <div className="relative h-[78svh] min-h-[560px] w-full overflow-hidden bg-aubergine-deep">
+            {features.map((f, i) => (
+              <img key={f.name} src={f.image} alt={`${f.name}: ${f.line}`} width={1200} height={800} loading="lazy" className={`slide-img absolute inset-0 size-full object-cover ${i === active ? "is-active" : ""}`} />
+            ))}
+            <div className="absolute inset-0 bg-gradient-to-r from-aubergine-deep/90 via-aubergine-deep/40 to-transparent" />
+            <div className="page-shell relative flex h-full items-end pb-14 lg:items-center lg:pb-0">
+              <div key={feature.name} className="reveal max-w-[560px] text-primary-foreground">
+                <p className="devanagari text-3xl text-gold-light">{feature.dev}</p>
+                <h3 className="mt-2 text-7xl leading-none lg:text-[7.5rem]">{feature.name}</h3>
+                <p className="mt-5 font-display text-3xl italic text-gold-light">{feature.line}</p>
+                <p className="mt-5 text-lg leading-[1.7] text-primary-foreground/85 lg:text-xl">{feature.body}</p>
+              </div>
+            </div>
+          </div>
 
-        <section id="waitlist" className="section-pad bg-aubergine-deep text-primary-foreground"><div className="page-shell grid gap-16 lg:grid-cols-2"><div><p className="eyebrow !text-gold-light">An early invitation</p><h2 className="mt-4 text-5xl leading-tight lg:text-7xl">Be among the first to wear svaraa.</h2><p className="mt-7 max-w-[580px] text-xl text-primary-foreground/80">Join the waitlist for early access, private demonstrations and launch updates.</p></div><form onSubmit={submitWaitlist} className="grid gap-5" noValidate><label className="font-ui text-sm uppercase">Name<input name="name" required minLength={2} maxLength={100} className="mt-2 h-14 w-full border border-gold-light/50 bg-transparent px-4 font-body text-lg outline-none focus:ring-2 focus:ring-gold-light"/></label><label className="font-ui text-sm uppercase">Phone number<input name="phone" type="tel" required minLength={7} maxLength={20} className="mt-2 h-14 w-full border border-gold-light/50 bg-transparent px-4 font-body text-lg outline-none focus:ring-2 focus:ring-gold-light"/></label><label className="font-ui text-sm uppercase">Email address<input name="email" type="email" required maxLength={255} className="mt-2 h-14 w-full border border-gold-light/50 bg-transparent px-4 font-body text-lg outline-none focus:ring-2 focus:ring-gold-light"/></label><Button variant="gold" type="submit" disabled={status==="sending"}>{status==="sending" ? "Joining..." : "Join the waitlist"}</Button>{status==="done"&&<p role="status" className="text-gold-light">You are on the list. We will be in touch.</p>}{status==="error"&&<p role="alert" className="text-primary-foreground">Please check all three details and try again.</p>}</form></div></section>
+          <div className="page-shell mt-6 grid grid-cols-4 gap-3 sm:grid-cols-7" role="tablist" aria-label="Choose a svaraa">
+            {features.map((f, i) => (
+              <button key={f.name} role="tab" aria-selected={i === active} onClick={() => setActive(i)} className={`thumb group text-left ${i === active ? "is-active" : ""}`}>
+                <span className="block overflow-hidden rounded-[2px]"><img src={f.image} alt="" loading="lazy" className="aspect-[4/3] w-full object-cover" /></span>
+                <span className="mt-3 flex items-baseline gap-2 font-ui text-[15px]"><span className="text-gold-deep">0{i + 1}</span><span className="text-foreground">{f.name}</span></span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* TECH (deep band) */}
+        <section className="section-pad relative overflow-hidden bg-aubergine-deep text-primary-foreground">
+          <div aria-hidden className="jali jali-dark absolute inset-0" />
+          <div className="page-shell relative grid gap-16 lg:grid-cols-2">
+            <div data-reveal>
+              <p className="numeral !text-gold-light">04</p><p className="eyebrow mt-2 !text-gold-light">Quietly advanced</p>
+              <h2 className="mt-5 text-5xl leading-[1.05] lg:text-7xl">Ancient rhythm.<br /><em className="text-gold-light">Frontier</em> intelligence.</h2>
+            </div>
+            <div data-reveal className="self-end">
+              <p className="text-xl leading-[1.7] text-primary-foreground/85">Powered by the world's leading frontier models and trained for life in a post-AI world. It listens, remembers and answers with precision, while everything you feel stays unmistakably human.</p>
+              <div className="mt-10 grid grid-cols-3 border-t border-gold/40 pt-8">
+                {[["< 1s", "to answer"], ["24/7", "fall watch"], ["10", "languages"]].map(([a, b]) => <div key={a}><p className="font-display text-4xl text-gold-light">{a}</p><p className="font-ui text-[15px] text-primary-foreground/70">{b}</p></div>)}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* MAKERS */}
+        <section id="makers" className="section-pad">
+          <div className="page-shell grid gap-16 lg:grid-cols-[.9fr_1.1fr]">
+            <div data-reveal>
+              <p className="numeral">05</p><p className="eyebrow mt-2">Built by</p>
+              <h2 className="mt-5 text-5xl leading-[1.08] text-primary lg:text-6xl">Two Indian-origin graduates, building from their Ivy League dorms.</h2>
+              <p className="mt-6 max-w-[460px] text-xl text-foreground/80">Raised on bhajans at dawn, trained on the hardest problems in computing. svaraa is where both halves meet.</p>
+            </div>
+            <div className="grid gap-8 sm:grid-cols-2">
+              {[[founder01, "Founder 01"], [founder02, "Founder 02"]].map(([img, name], i) => (
+                <article data-reveal key={name} className="lift-card" style={{ transitionDelay: `${i * 80}ms` }}>
+                  <img src={img} alt={`Symbolic avatar for ${name}`} width={816} height={816} loading="lazy" className="arch aspect-[4/5] w-full object-cover" />
+                  <h3 className="mt-6 text-3xl text-primary">{name}</h3>
+                  <p className="font-ui text-[15px] text-muted-foreground">Full introduction coming soon</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* WAITLIST */}
+        <section id="waitlist" className="section-pad border-t border-border bg-champagne">
+          <div className="page-shell grid gap-14 lg:grid-cols-2 lg:gap-24">
+            <div data-reveal>
+              <p className="numeral">06</p><p className="eyebrow mt-2">An early invitation</p>
+              <h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">Be among the first to wear svaraa.</h2>
+              <p className="mt-6 max-w-[480px] text-xl text-foreground/80">Early access, a private demonstration at home and first word at launch. Reserving one for your parents? Add your own details and we will guide you through the gift.</p>
+            </div>
+            <form data-reveal onSubmit={submitWaitlist} noValidate className="grid gap-6 border border-border bg-background p-8 lg:p-12">
+              <label className="font-ui text-[15px] text-foreground">Your name<input name="name" required maxLength={100} autoComplete="name" className="field" /></label>
+              <label className="font-ui text-[15px] text-foreground">Phone number
+                <span className="mt-2 flex"><span className="flex h-14 items-center border border-r-0 border-input bg-pearl px-4 text-lg">+91</span><input name="phone" type="tel" required maxLength={20} autoComplete="tel" className="field !mt-0" /></span>
+              </label>
+              <label className="font-ui text-[15px] text-foreground">Email address<input name="email" type="email" required maxLength={255} autoComplete="email" className="field" /></label>
+              <button type="submit" disabled={status === "sending"} className="btn btn-primary mt-2 w-full justify-center">{status === "sending" ? "Reserving" : "Reserve my place"}</button>
+              {status === "done" && <p role="status" className="text-[#3F6B4F]">Thank you. You are on the list, and we will be in touch personally.</p>}
+              {status === "error" && <p role="alert" className="text-destructive">Please check your name, number and email, then try once more.</p>}
+            </form>
+          </div>
+        </section>
       </main>
 
-      <footer className="border-t border-gold/30 bg-aubergine-deep py-12 text-primary-foreground"><div className="page-shell flex flex-col justify-between gap-8 md:flex-row md:items-end"><div><Brand reverse/><p className="mt-4 text-primary-foreground/70">Sound. Stillness. Self.</p></div><div className="text-left md:text-right"><a href="/admin" className="mr-5 text-primary-foreground/60">Admin</a><a href="https://superstar.wtf/shawm" rel="noreferrer" target="_blank" className="text-primary-foreground/70">Tech by Shawm at Superstar Tech Inc</a><p className="mt-3 text-sm text-primary-foreground/50">© 2026 svaraa</p></div></div></footer>
+      <footer className="bg-aubergine-deep py-16 text-primary-foreground">
+        <div className="page-shell">
+          <div className="flex flex-col justify-between gap-10 border-b border-gold/30 pb-12 md:flex-row md:items-end">
+            <div><Brand reverse /><p className="mt-5 font-display text-2xl italic text-gold-light">Sound. Stillness. Self.</p></div>
+            <nav className="flex flex-wrap gap-8 font-ui text-[15px] text-primary-foreground/80">{nav.map(([h, l]) => <a key={h} href={h}>{l}</a>)}</nav>
+          </div>
+          <div className="flex flex-col justify-between gap-4 pt-8 font-ui text-[15px] text-primary-foreground/60 md:flex-row">
+            <p>© 2026 svaraa. All rights reserved.</p>
+            <p><a href="/admin" className="mr-6">Admin</a><a href="https://superstar.wtf/shawm" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-primary-foreground/80">Tech by Shawm at Superstar Tech Inc <ArrowUpRight size={15} /></a></p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
