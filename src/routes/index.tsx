@@ -46,7 +46,8 @@ function Home() {
   const [menu, setMenu] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [fontScale, setFontScale] = useState(100);
-  const feature = features[active];
+  const feature = features[active] ?? features[0];
+  if (!feature) return null;
 
   async function submitWaitlist(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setStatus("sending");
