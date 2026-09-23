@@ -53,7 +53,6 @@ function Home() {
   const [active, setActive] = useState(0);
   const [menu, setMenu] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
-  const [fontScale, setFontScale] = useState(100);
   const glow = useRef<HTMLDivElement>(null);
   useReveal();
 
@@ -81,7 +80,7 @@ function Home() {
   const nav = [["#companion", "The companion"], ["#why", "Why svaraa"], ["#seven", "Seven svaraas"], ["#makers", "Makers"]];
 
   return (
-    <div style={{ fontSize: `${fontScale}%` }} className="relative">
+    <div className="relative">
       <div ref={glow} aria-hidden className="pointer-glow" />
 
       <header className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
@@ -90,10 +89,7 @@ function Home() {
           <nav className="hidden items-center gap-9 font-ui text-[15px] lg:flex" aria-label="Main">
             {nav.map(([h, l]) => <a key={h} href={h} className="link-sweep">{l}</a>)}
           </nav>
-          <div className="hidden items-center gap-6 lg:flex">
-            <div className="flex items-baseline gap-2.5 font-ui text-[15px]" role="group" aria-label="Text size">
-              {[100, 112.5, 125].map((s, i) => <button key={s} onClick={() => setFontScale(s)} aria-pressed={fontScale === s} className={fontScale === s ? "text-primary underline decoration-gold underline-offset-4" : "text-muted-foreground"}>A{"+".repeat(i)}</button>)}
-            </div>
+          <div className="hidden lg:flex">
             <a href="#waitlist" className="btn btn-primary">Join the waitlist</a>
           </div>
           <button className="flex items-center gap-2 font-ui lg:hidden" aria-label="Menu" onClick={() => setMenu(!menu)}>{menu ? <X /> : <Menu />}Menu</button>
