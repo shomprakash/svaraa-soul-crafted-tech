@@ -270,7 +270,7 @@ function Home() {
               </label>
               <label className="font-ui text-[15px] text-foreground">Email address<input name="email" type="email" required maxLength={255} autoComplete="email" className="field" /></label>
               <button type="submit" disabled={status === "sending"} className="btn btn-primary mt-2 w-full justify-center">{status === "sending" ? "Reserving" : "Reserve my place"}</button>
-              {status === "done" && <p role="status" className="text-[#3F6B4F]">Thank you. You are on the list, and we will be in touch personally.</p>}
+              {status === "done" && <p role="status" className="text-primary">Thank you. You are on the list, and we will be in touch personally.</p>}
               {status === "error" && <p role="alert" className="text-destructive">Please check your name, number and email, then try once more.</p>}
             </form>
           </div>
