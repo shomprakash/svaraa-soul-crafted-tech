@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Brand, SvaraaEmblem } from "@/components/Brand";
 import { supabase } from "@/integrations/supabase/client";
 import hero from "@/assets/svaraa-hero.jpg";
-import productFilmAsset from "@/assets/svaraa-product-film.mp4.asset.json";
+import productFilmAsset from "@/assets/svaraa-product-film.webm.asset.json";
 import productFilmPosterAsset from "@/assets/svaraa-product-film-poster.jpg.asset.json";
 import products from "@/assets/svaraa-products.jpg";
 import founder01 from "@/assets/founder-01.jpg";
