@@ -4,6 +4,8 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Brand, SvaraaEmblem } from "@/components/Brand";
 import { supabase } from "@/integrations/supabase/client";
 import hero from "@/assets/svaraa-hero.jpg";
+import productFilmAsset from "@/assets/svaraa-product-film.mp4.asset.json";
+import productFilmPosterAsset from "@/assets/svaraa-product-film-poster.jpg.asset.json";
 import products from "@/assets/svaraa-products.jpg";
 import founder01 from "@/assets/founder-01.jpg";
 import founder02 from "@/assets/founder-02.jpg";
@@ -54,12 +56,26 @@ function Home() {
   const [menu, setMenu] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const glow = useRef<HTMLDivElement>(null);
+  const productFilm = useRef<HTMLVideoElement>(null);
   useReveal();
 
   useEffect(() => {
     const move = (e: PointerEvent) => { if (glow.current) glow.current.style.transform = `translate(${e.clientX - 200}px, ${e.clientY - 200}px)`; };
     window.addEventListener("pointermove", move);
     return () => window.removeEventListener("pointermove", move);
+  }, []);
+
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const applyPreference = () => {
+      const film = productFilm.current;
+      if (!film) return;
+      if (preference.matches) film.pause();
+      else void film.play().catch(() => undefined);
+    };
+    applyPreference();
+    preference.addEventListener("change", applyPreference);
+    return () => preference.removeEventListener("change", applyPreference);
   }, []);
 
   const feature = features[active] ?? features[0]!;
@@ -98,16 +114,37 @@ function Home() {
       </header>
 
       <main id="top">
-        {/* HERO */}
-        <section className="relative overflow-hidden bg-background pt-[76px]">
+        {/* PRODUCT FILM */}
+        <section className="film-hero" aria-labelledby="film-heading">
+          <video
+            ref={productFilm}
+            className="film-hero-media"
+            src={productFilmAsset.url}
+            poster={productFilmPosterAsset.url}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+          />
+          <div className="film-hero-overlay" aria-hidden />
+          <div className="film-hero-frame" aria-hidden />
+          <div className="page-shell film-hero-content">
+            <h1 id="film-heading">Wear the stillness you seek</h1>
+          </div>
+        </section>
+
+        {/* PERSONAL COMPANION */}
+        <section className="relative overflow-hidden bg-background">
           <div aria-hidden className="jali absolute inset-0 opacity-60" />
           <span aria-hidden className="devanagari pointer-events-none absolute -right-10 top-24 select-none text-[22rem] leading-none text-gold/10 lg:text-[30rem]">स्वर</span>
           <div className="page-shell relative grid min-h-[calc(100svh-76px)] items-center gap-12 py-16 lg:grid-cols-[1.05fr_.95fr] lg:gap-20">
             <div>
               <p className="eyebrow reveal">A wearable practice <span className="mx-2 text-gold">|</span> Made in India</p>
-              <h1 className="reveal mt-7 text-[3.6rem] leading-[.92] text-primary sm:text-[5rem] lg:text-[6.4rem]" style={{ animationDelay: "80ms" }}>
-                Wear the<br /><em className="font-light text-gold-deep">stillness</em><br />you seek.
-              </h1>
+              <h2 className="reveal mt-7 text-[3.6rem] leading-[.92] text-primary sm:text-[5rem] lg:text-[6.4rem]" style={{ animationDelay: "80ms" }}>
+                Your personal<br /><em className="font-light text-gold-deep">spiritual</em><br />companion.
+              </h2>
               <div className="hairline reveal mt-10 w-40" style={{ animationDelay: "160ms" }} />
               <p className="reveal mt-8 max-w-[520px] text-xl leading-[1.7] text-foreground/85 lg:text-[1.35rem]" style={{ animationDelay: "240ms" }}>
                 A sacred companion worn as a rudraksha mala or a wristband. It keeps your prayers on time, your family's voice close and help within a word.
