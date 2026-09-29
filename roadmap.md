@@ -5,4 +5,4 @@
 - [x] Present health, fall detection, alerts, battery, water resistance, and languages prominently
 - [x] Move the seven device modes ahead of the quieter spiritual rationale
 - [x] Keep the makers and waitlist sections unchanged
-- [ ] Verify desktop and mobile presentation
+- [x] Verify desktop and mobile presentation
