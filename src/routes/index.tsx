@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Menu, X } from "lucide-react";
+import { Activity, ArrowLeft, ArrowRight, ArrowUpRight, BatteryMedium, Droplets, Languages, Menu, Radio, ShieldCheck, X } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Brand, SvaraaEmblem } from "@/components/Brand";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,9 +21,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "svaraa | Wear the stillness you seek" },
-      { name: "description", content: "svaraa is a sacred wearable companion for prayer, connection, memory and peace of mind, crafted in India." },
+      { name: "description", content: "svaraa is a screenless wearable for 24/7 wellbeing monitoring, fall detection, family alerts and voice assistance, crafted in India." },
       { property: "og:title", content: "svaraa | Wear the stillness you seek" },
-      { property: "og:description", content: "A mala pendant and wristband that carry your practice, your family's voice and quiet protection through every day." },
+      { property: "og:description", content: "A premium pendant and wristband for wellbeing trends, fall monitoring, remote family alerts and seven screenless modes." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -33,13 +33,20 @@ export const Route = createFileRoute("/")({
 });
 
 const features = [
-  { name: "Recite", dev: "पाठ", line: "Sacred rhythm, on your hours.", body: "Morning slokas, pooja chants and evening mantras begin at the time you choose, shaped around your own practice and tradition.", image: recite },
-  { name: "Respond", dev: "उत्तर", line: "A familiar voice, always near.", body: "Ask about the weather, the day or anything on your mind. svaraa answers in the warmth of a voice you already love.", image: respond },
+  { name: "Recite", dev: "पाठ", line: "Your daily practice, on time.", body: "Set prayers, slokas and familiar audio to begin at the hours you choose, without opening a screen or reaching for a phone.", image: recite },
+  { name: "Respond", dev: "उत्तर", line: "Answers, simply spoken.", body: "Ask about the weather, the day or anything on your mind. svaraa responds naturally, in a language and voice that feel familiar.", image: respond },
   { name: "Remind", dev: "स्मरण", line: "Care that arrives gently.", body: "Spoken prompts for medicine, water, appointments and the small routines that help a day flow well.", image: remind },
-  { name: "Rescue", dev: "रक्षा", line: "Quiet protection, when it matters.", body: "Fall detection and a spoken call for help reach family at once. No phone to find, no small button to press.", image: rescue },
+  { name: "Rescue", dev: "रक्षा", line: "Fall watch and alerts, always ready.", body: "If a fall is detected, svaraa checks in and can alert family remotely. A spoken call for help works without finding a phone or pressing a small button.", image: rescue },
   { name: "Recall", dev: "स्मृति", line: "A second memory for life's details.", body: "Keep the moments that matter close, from a grandchild's birthday to the last darshan at Tirupati.", image: recall },
   { name: "Repository", dev: "कोश", line: "The world, ready to be heard.", body: "Scripture, cricket, cinema and the news, spoken aloud. Your personal and health records, always within reach.", image: repository },
   { name: "Riddle", dev: "पहेली", line: "A sharper mind, through play.", body: "Daily spoken riddles, word games and trivia bring a little challenge and a great deal of joy.", image: riddle },
+];
+
+const careViews = [
+  { label: "Wellbeing", icon: Activity, value: "Trends, at a glance", note: "Everyday vital and activity patterns can be followed remotely, without turning care into surveillance." },
+  { label: "Fall watch", icon: ShieldCheck, value: "Watching, 24/7", note: "Continuous fall monitoring checks in with the wearer and can notify chosen family contacts when help may be needed." },
+  { label: "Family alerts", icon: Radio, value: "Shared in real time", note: "Important changes and safety events reach the people who need to know, wherever they are." },
+  { label: "Power", icon: BatteryMedium, value: "Up to 7 days", note: "A long-lasting charge keeps svaraa present through daily routines, nights and travel." },
 ];
 
 function useReveal() {
@@ -52,7 +59,8 @@ function useReveal() {
 }
 
 function Home() {
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(3);
+  const [careView, setCareView] = useState(0);
   const [menu, setMenu] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const glow = useRef<HTMLDivElement>(null);
@@ -78,7 +86,8 @@ function Home() {
     return () => preference.removeEventListener("change", applyPreference);
   }, []);
 
-  const feature = features[active] ?? features[0]!;
+  const feature = features[active] ?? features[3] ?? features[0]!;
+  const selectedCareView = careViews[careView] ?? careViews[0]!;
   const go = (d: number) => setActive((a) => (a + d + 7) % 7);
 
   async function submitWaitlist(event: FormEvent<HTMLFormElement>) {
@@ -93,7 +102,7 @@ function Home() {
     formEl.reset(); setStatus("done");
   }
 
-  const nav = [["#companion", "The companion"], ["#why", "Why svaraa"], ["#seven", "Seven svaraas"], ["#makers", "Makers"]];
+  const nav = [["#product", "The product"], ["#seven", "Seven modes"], ["#why", "Why svaraa"], ["#makers", "Makers"]];
 
   return (
     <div className="relative">
@@ -135,31 +144,52 @@ function Home() {
           </div>
         </section>
 
-        {/* PERSONAL COMPANION */}
-        <section className="relative overflow-hidden bg-background">
-          <div aria-hidden className="jali absolute inset-0 opacity-60" />
-          <span aria-hidden className="devanagari pointer-events-none absolute -right-10 top-24 select-none text-[22rem] leading-none text-gold/10 lg:text-[30rem]">स्वर</span>
-          <div className="page-shell relative grid min-h-[calc(100svh-76px)] items-center gap-12 py-16 lg:grid-cols-[1.05fr_.95fr] lg:gap-20">
-            <div>
-              <p className="eyebrow reveal">A wearable practice <span className="mx-2 text-gold">|</span> Made in India</p>
-              <h2 className="reveal mt-7 text-[3.6rem] leading-[.92] text-primary sm:text-[5rem] lg:text-[6.4rem]" style={{ animationDelay: "80ms" }}>
-                Your personal<br /><em className="font-light text-gold-deep">spiritual</em><br />companion.
-              </h2>
-              <div className="hairline reveal mt-10 w-40" style={{ animationDelay: "160ms" }} />
-              <p className="reveal mt-8 max-w-[520px] text-xl leading-[1.7] text-foreground/85 lg:text-[1.35rem]" style={{ animationDelay: "240ms" }}>
-                A sacred companion worn as a rudraksha mala or a wristband. It keeps your prayers on time, your family's voice close and help within a word.
-              </p>
-              <div className="reveal mt-10 flex flex-wrap items-center gap-5" style={{ animationDelay: "320ms" }}>
-                <a href="#waitlist" className="btn btn-primary">Reserve your svaraa</a>
-                <a href="#seven" className="btn btn-ghost">See the seven svaraas <ArrowRight size={18} /></a>
-              </div>
+        {/* PRODUCT OVERVIEW */}
+        <section id="product" className="product-overview relative overflow-hidden bg-pearl">
+          <div aria-hidden className="jali absolute inset-0 opacity-45" />
+          <div className="page-shell relative py-20 lg:py-28">
+            <div data-reveal className="mx-auto max-w-[900px] text-center">
+              <p className="numeral">01</p>
+              <p className="eyebrow mt-2">A screenless wearable for everyday care</p>
+              <h2 className="mt-5 text-5xl leading-[1.02] text-primary sm:text-6xl lg:text-[5.5rem]">Know they are well.<br /><em className="text-gold-deep">Wherever you are.</em></h2>
+              <p className="mx-auto mt-7 max-w-[720px] text-xl leading-[1.7] text-foreground/80">svaraa is worn as a pendant or wristband. It follows everyday wellbeing, watches for falls and sends important alerts to family, without putting another screen into anyone's life.</p>
             </div>
-            <div className="reveal relative mx-auto w-full max-w-[520px]" style={{ animationDelay: "200ms" }}>
-              <div className="arch-outline absolute -inset-4" aria-hidden />
-              <img src={hero} alt="A woman in an ivory kurta wearing the svaraa pendant in a sunlit courtyard" width={1536} height={1152} className="arch relative aspect-[4/5] w-full object-cover object-[70%_center]" />
-              <div className="absolute -bottom-6 -left-6 hidden border border-border bg-background/95 px-6 py-5 shadow-[0_20px_50px_-20px_var(--primary)] backdrop-blur sm:block">
-                <p className="font-ui text-[15px] text-muted-foreground">Battery</p>
-                <p className="font-display text-4xl text-primary">7 days</p>
+
+            <div data-reveal className="product-console mt-14 lg:mt-20">
+              <div className="product-console-visual">
+                <img src={hero} alt="A woman wearing the svaraa pendant" width={1536} height={1152} className="size-full object-cover object-[70%_center]" />
+                <div className="product-console-caption">
+                  <span className="status-pulse" aria-hidden />
+                  <span>Connected to family</span>
+                </div>
+              </div>
+
+              <div className="product-console-panel">
+                <div className="flex items-start justify-between gap-5 border-b border-border pb-7">
+                  <div><p className="font-ui text-[15px] uppercase text-gold-deep">Live care view</p><h3 className="mt-2 text-4xl text-primary">Quiet technology.<br />Clear reassurance.</h3></div>
+                  <SvaraaEmblem className="size-12 shrink-0 text-gold" />
+                </div>
+
+                <div className="care-tabs mt-7" role="tablist" aria-label="Explore svaraa monitoring views">
+                  {careViews.map((view, index) => {
+                    const Icon = view.icon;
+                    return <button key={view.label} type="button" role="tab" aria-selected={careView === index} onClick={() => setCareView(index)} className={`care-tab ${careView === index ? "is-active" : ""}`}><Icon size={19} /><span>{view.label}</span></button>;
+                  })}
+                </div>
+
+                <div key={selectedCareView.label} className="care-readout reveal mt-8" role="tabpanel">
+                  <p className="font-ui text-[15px] text-muted-foreground">{selectedCareView.label}</p>
+                  <p className="mt-2 font-display text-[2.6rem] leading-none text-primary">{selectedCareView.value}</p>
+                  <div className="care-signal" aria-hidden><span /><span /><span /><span /><span /></div>
+                  <p className="mt-5 max-w-[490px] text-foreground/75">{selectedCareView.note}</p>
+                </div>
+
+                <div className="mt-8 grid grid-cols-3 border-t border-border pt-7">
+                  <div><Droplets className="mb-2 text-gold-deep" size={21} /><p className="font-display text-2xl text-primary">IP68</p><p className="font-ui text-[15px] text-muted-foreground">Water resistant</p></div>
+                  <div><BatteryMedium className="mb-2 text-gold-deep" size={21} /><p className="font-display text-2xl text-primary">7 days</p><p className="font-ui text-[15px] text-muted-foreground">Battery life</p></div>
+                  <div><Languages className="mb-2 text-gold-deep" size={21} /><p className="font-display text-2xl text-primary">Indian</p><p className="font-ui text-[15px] text-muted-foreground">Languages</p></div>
+                </div>
+                <p className="mt-6 font-ui text-[15px] leading-relaxed text-muted-foreground">Designed for wellbeing awareness and timely assistance, not medical diagnosis.</p>
               </div>
             </div>
           </div>
@@ -168,7 +198,7 @@ function Home() {
         {/* TRUST */}
         <div className="border-y border-border bg-champagne">
           <div className="page-shell grid grid-cols-2 gap-y-6 py-8 text-center md:grid-cols-4">
-            {[["IP68", "Wear it to the ghat"], ["7 days", "On a single charge"], ["No screen", "Nothing to learn"], ["Hindi + 9", "Indian languages"]].map(([a, b]) => (
+            {[["24/7", "Fall monitoring"], ["IP68", "Water resistant"], ["7 days", "Battery life"], ["Indian", "Languages"]].map(([a, b]) => (
               <div key={a} className="md:border-r md:border-border md:last:border-0"><p className="font-display text-3xl text-primary">{a}</p><p className="font-ui text-[15px] text-muted-foreground">{b}</p></div>
             ))}
           </div>
@@ -178,13 +208,13 @@ function Home() {
         <section id="companion" className="section-pad">
           <div className="page-shell">
             <div data-reveal className="grid items-end gap-8 lg:grid-cols-2">
-              <div><p className="numeral">01</p><p className="eyebrow mt-2">One companion, two forms</p><h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">Made to belong,<br />not to be learned.</h2></div>
-              <p className="max-w-[520px] text-xl text-foreground/80 lg:justify-self-end">No screens, no menus, no charging cables tangled on the bedside table. You speak, svaraa listens. That is the whole manual.</p>
+              <div><p className="eyebrow">One product, two forms</p><h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">Wear it your way.<br />Nothing new to learn.</h2></div>
+              <p className="max-w-[520px] text-xl text-foreground/80 lg:justify-self-end">The same discreet technology comes as a rudraksha mala pendant or a soft wristband. No screen, no menus and no phone required for everyday use.</p>
             </div>
             <div className="mt-16 grid gap-8 lg:grid-cols-[1.3fr_1fr]">
               <div data-reveal className="group relative overflow-hidden rounded-[4px]"><img src={products} alt="svaraa mala pendant and wristband on carved sandstone" width={1408} height={1408} loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.03]" /></div>
               <div className="grid gap-8">
-                {[["The mala", "A rudraksha mala with a bronze-set pendant that rests close to the voice and heart. Worn to the temple, the dinner table and to sleep."], ["The wristband", "Soft woven strap, the same quiet dial. For those who prefer it at the wrist, or wear both."]].map(([t, d], i) => (
+                {[["The mala", "A rudraksha mala with a bronze-set wearable that keeps monitoring, voice assistance and family connection close through the day."], ["The wristband", "A soft woven strap with the same monitoring, fall watch and voice features, designed for effortless everyday wear."]].map(([t, d], i) => (
                   <article data-reveal key={t} className="lift-card flex flex-col justify-between border border-border bg-pearl p-8 lg:p-10" style={{ transitionDelay: `${i * 80}ms` }}>
                     <p className="font-ui text-[15px] text-gold-deep">Form {i + 1}</p>
                     <div><h3 className="mt-6 text-4xl text-primary">{t}</h3><p className="mt-3 text-foreground/75">{d}</p></div>
@@ -195,30 +225,10 @@ function Home() {
           </div>
         </section>
 
-        {/* WHY */}
-        <section id="why" className="section-pad relative overflow-hidden bg-pearl">
-          <SvaraaEmblem className="absolute -left-40 top-1/2 size-[560px] -translate-y-1/2 text-gold opacity-[.07]" />
-          <div className="page-shell relative">
-            <div data-reveal className="max-w-[980px]">
-              <p className="numeral">02</p><p className="eyebrow mt-2">Why svaraa</p>
-              <h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-[5.2rem]">Distance should never<br />feel like <em className="text-gold-deep">absence.</em></h2>
-            </div>
-            <div className="mt-20 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
-              {[["For parents", "who have earned their independence and intend to keep it. Their rituals, their pace, their home."], ["For their children", "in Pune, Dubai or Boston, who want to be near without hovering. A voice at the right hour. A call when it counts."], ["For the young seeker", "who wants discipline to live somewhere quieter than an app. Practice that stays on the body, not the phone."]].map(([t, d], i) => (
-                <div data-reveal key={t} className="bg-pearl p-8 lg:p-12" style={{ transitionDelay: `${i * 80}ms` }}>
-                  <p className="font-display text-6xl italic text-gold">{["i", "ii", "iii"][i]}</p>
-                  <h3 className="mt-6 text-3xl text-primary">{t}</h3>
-                  <p className="mt-3 text-foreground/75">{d}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* SEVEN */}
         <section id="seven" className="section-pad">
           <div className="page-shell mb-12 flex flex-wrap items-end justify-between gap-8" data-reveal>
-            <div><p className="numeral">03</p><p className="eyebrow mt-2">The seven svaraas</p><h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">Seven notes.<br />One quiet day.</h2></div>
+            <div><p className="numeral">02</p><p className="eyebrow mt-2">Seven modes, one device</p><h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">Seven svaraas.<br />Ready when needed.</h2></div>
             <div className="flex items-center gap-4">
               <span className="font-ui text-lg text-muted-foreground"><span className="text-primary">0{active + 1}</span> / 07</span>
               <button onClick={() => go(-1)} aria-label="Previous svaraa" className="round-btn"><ArrowLeft /></button>
@@ -241,7 +251,7 @@ function Home() {
             </div>
           </div>
 
-          <div className="page-shell mt-6 grid grid-cols-4 gap-3 sm:grid-cols-7" role="tablist" aria-label="Choose a svaraa">
+          <div className="page-shell mt-6 grid grid-cols-4 gap-3 sm:grid-cols-7" role="tablist" aria-label="Choose a device mode">
             {features.map((f, i) => (
               <button key={f.name} role="tab" aria-selected={i === active} onClick={() => setActive(i)} className={`thumb group text-left ${i === active ? "is-active" : ""}`}>
                 <span className="block overflow-hidden rounded-[2px]"><img src={f.image} alt="" loading="lazy" className="aspect-[4/3] w-full object-cover" /></span>
@@ -251,18 +261,39 @@ function Home() {
           </div>
         </section>
 
+
+        {/* WHY */}
+        <section id="why" className="section-pad relative overflow-hidden bg-pearl">
+          <SvaraaEmblem className="absolute -left-40 top-1/2 size-[560px] -translate-y-1/2 text-gold opacity-[.07]" />
+          <div className="page-shell relative">
+            <div data-reveal className="max-w-[980px]">
+              <p className="numeral">03</p><p className="eyebrow mt-2">Why svaraa</p>
+              <h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-[5.2rem]">Care should preserve<br /><em className="text-gold-deep">independence.</em></h2>
+            </div>
+            <div className="mt-20 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
+              {[["For parents", "who value their independence, their routines and the confidence of knowing help can reach them when needed."], ["For their children", "living near or far, who want meaningful reassurance without constant calls, cameras or hovering."], ["For daily stillness", "because technology can protect without demanding attention. Voice, ritual and reflection stay close, while the screen stays away."]].map(([t, d], i) => (
+                <div data-reveal key={t} className="bg-pearl p-8 lg:p-12" style={{ transitionDelay: `${i * 80}ms` }}>
+                  <p className="font-display text-6xl italic text-gold">{["i", "ii", "iii"][i]}</p>
+                  <h3 className="mt-6 text-3xl text-primary">{t}</h3>
+                  <p className="mt-3 text-foreground/75">{d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* TECH (deep band) */}
         <section className="section-pad relative overflow-hidden bg-aubergine-deep text-primary-foreground">
           <div aria-hidden className="jali jali-dark absolute inset-0" />
           <div className="page-shell relative grid gap-16 lg:grid-cols-2">
             <div data-reveal>
               <p className="numeral !text-gold-light">04</p><p className="eyebrow mt-2 !text-gold-light">Quietly advanced</p>
-              <h2 className="mt-5 text-5xl leading-[1.05] lg:text-7xl">Ancient rhythm.<br /><em className="text-gold-light">Frontier</em> intelligence.</h2>
+              <h2 className="mt-5 text-5xl leading-[1.05] lg:text-7xl">Serious capability.<br /><em className="text-gold-light">Simply</em> worn.</h2>
             </div>
             <div data-reveal className="self-end">
-              <p className="text-xl leading-[1.7] text-primary-foreground/85">Powered by the world's leading frontier models and trained for life in a post-AI world. It listens, remembers and answers with precision, while everything you feel stays unmistakably human.</p>
+              <p className="text-xl leading-[1.7] text-primary-foreground/85">Powered by the world's leading frontier models and built for life in a post-AI world. Monitoring, memory, voice and alerts work together in one screenless device, while the experience stays calm and unmistakably human.</p>
               <div className="mt-10 grid grid-cols-3 border-t border-gold/40 pt-8">
-                {[["< 1s", "to answer"], ["24/7", "fall watch"], ["10", "languages"]].map(([a, b]) => <div key={a}><p className="font-display text-4xl text-gold-light">{a}</p><p className="font-ui text-[15px] text-primary-foreground/70">{b}</p></div>)}
+                {[["24/7", "fall watch"], ["Remote", "family alerts"], ["Indian", "languages"]].map(([a, b]) => <div key={a}><p className="font-display text-4xl text-gold-light">{a}</p><p className="font-ui text-[15px] text-primary-foreground/70">{b}</p></div>)}
               </div>
             </div>
           </div>
