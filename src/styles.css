@@ -275,6 +275,7 @@
 @media (min-width:1024px) { .product-console { grid-template-columns: 1.02fr .98fr; } }
 @media (max-width:639px) {
   .product-console-visual { min-height: 27rem; }
+  .product-console-visual img { object-position: 70% 30%; }
   .product-console-panel { padding: 1.5rem; }
   .care-tabs { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .care-readout { min-height: 15rem; }

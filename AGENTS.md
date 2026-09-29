@@ -12,3 +12,4 @@
 ## Project architecture
 
 - Keep `/assets` as an unlisted public brand library with immutable CDN-hosted downloadable masters, so internal collaborators can use stable files without exposing the page in public navigation.
+- Keep the homepage story product-first: wearable monitoring and seven modes precede the quieter spiritual rationale, so safety and utility lead the proposition.

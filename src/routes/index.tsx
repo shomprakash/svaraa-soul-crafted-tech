@@ -187,7 +187,7 @@ function Home() {
                 <div className="mt-8 grid grid-cols-3 border-t border-border pt-7">
                   <div><Droplets className="mb-2 text-gold-deep" size={21} /><p className="font-display text-2xl text-primary">IP68</p><p className="font-ui text-[15px] text-muted-foreground">Water resistant</p></div>
                   <div><BatteryMedium className="mb-2 text-gold-deep" size={21} /><p className="font-display text-2xl text-primary">7 days</p><p className="font-ui text-[15px] text-muted-foreground">Battery life</p></div>
-                  <div><Languages className="mb-2 text-gold-deep" size={21} /><p className="font-display text-2xl text-primary">10</p><p className="font-ui text-[15px] text-muted-foreground">Indian languages</p></div>
+                  <div><Languages className="mb-2 text-gold-deep" size={21} /><p className="font-display text-2xl text-primary">Indian</p><p className="font-ui text-[15px] text-muted-foreground">Languages</p></div>
                 </div>
                 <p className="mt-6 font-ui text-[15px] leading-relaxed text-muted-foreground">Designed for wellbeing awareness and timely assistance, not medical diagnosis.</p>
               </div>
@@ -198,7 +198,7 @@ function Home() {
         {/* TRUST */}
         <div className="border-y border-border bg-champagne">
           <div className="page-shell grid grid-cols-2 gap-y-6 py-8 text-center md:grid-cols-4">
-            {[["24/7", "Fall monitoring"], ["IP68", "Water resistant"], ["7 days", "Battery life"], ["10", "Indian languages"]].map(([a, b]) => (
+            {[["24/7", "Fall monitoring"], ["IP68", "Water resistant"], ["7 days", "Battery life"], ["Indian", "Languages"]].map(([a, b]) => (
               <div key={a} className="md:border-r md:border-border md:last:border-0"><p className="font-display text-3xl text-primary">{a}</p><p className="font-ui text-[15px] text-muted-foreground">{b}</p></div>
             ))}
           </div>
@@ -271,7 +271,7 @@ function Home() {
               <h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-[5.2rem]">Care should preserve<br /><em className="text-gold-deep">independence.</em></h2>
             </div>
             <div className="mt-20 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
-              {[["For parents", "who value their independence, their routines and the confidence of knowing help can reach them when needed."], ["For their children", "living near or far, who want meaningful reassurance without constant calls, cameras or hovering."], ["For the young seeker", "who wants useful technology to feel calmer and more intentional. A capable device that stays on the body, not in the feed."]].map(([t, d], i) => (
+              {[["For parents", "who value their independence, their routines and the confidence of knowing help can reach them when needed."], ["For their children", "living near or far, who want meaningful reassurance without constant calls, cameras or hovering."], ["For daily stillness", "because technology can protect without demanding attention. Voice, ritual and reflection stay close, while the screen stays away."]].map(([t, d], i) => (
                 <div data-reveal key={t} className="bg-pearl p-8 lg:p-12" style={{ transitionDelay: `${i * 80}ms` }}>
                   <p className="font-display text-6xl italic text-gold">{["i", "ii", "iii"][i]}</p>
                   <h3 className="mt-6 text-3xl text-primary">{t}</h3>
@@ -293,7 +293,7 @@ function Home() {
             <div data-reveal className="self-end">
               <p className="text-xl leading-[1.7] text-primary-foreground/85">Powered by the world's leading frontier models and built for life in a post-AI world. Monitoring, memory, voice and alerts work together in one screenless device, while the experience stays calm and unmistakably human.</p>
               <div className="mt-10 grid grid-cols-3 border-t border-gold/40 pt-8">
-                {[["24/7", "fall watch"], ["Remote", "family alerts"], ["10", "languages"]].map(([a, b]) => <div key={a}><p className="font-display text-4xl text-gold-light">{a}</p><p className="font-ui text-[15px] text-primary-foreground/70">{b}</p></div>)}
+                {[["24/7", "fall watch"], ["Remote", "family alerts"], ["Indian", "languages"]].map(([a, b]) => <div key={a}><p className="font-display text-4xl text-gold-light">{a}</p><p className="font-ui text-[15px] text-primary-foreground/70">{b}</p></div>)}
               </div>
             </div>
           </div>
