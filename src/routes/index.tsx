@@ -260,24 +260,26 @@ function Home() {
             </div>
           </div>
 
-          <div className="relative h-[78svh] min-h-[560px] w-full overflow-hidden bg-aubergine-deep">
-            {features.map((f, i) => (
-              <PendantPicture key={f.name} image={f.image} alt={i === active ? f.alt : ""} sizes="100vw" className={`slide-img absolute inset-0 size-full object-cover ${i === active ? "is-active" : ""}`} style={{ objectPosition: f.focus }} />
-            ))}
-            <div className="absolute inset-0 bg-gradient-to-t from-aubergine-deep/95 via-aubergine-deep/45 to-transparent lg:bg-gradient-to-r lg:from-aubergine-deep/90 lg:via-aubergine-deep/40" />
-            <div className="page-shell relative flex h-full items-end pb-14 lg:items-center lg:pb-0">
+          <div className="relative w-full overflow-hidden bg-aubergine-deep lg:h-[78svh] lg:min-h-[560px]">
+            <div className="relative aspect-[4/3] sm:aspect-[16/9] lg:absolute lg:inset-0 lg:aspect-auto">
+              {features.map((f, i) => (
+                <PendantPicture key={f.name} image={f.image} alt={i === active ? f.alt : ""} sizes="100vw" className={`slide-img absolute inset-0 size-full object-cover ${i === active ? "is-active" : ""}`} style={{ objectPosition: f.focus }} />
+              ))}
+              <div className="absolute inset-0 bg-gradient-to-t from-aubergine-deep/70 via-transparent to-transparent lg:bg-gradient-to-r lg:from-aubergine-deep/90 lg:via-aubergine-deep/40" />
+            </div>
+            <div className="page-shell relative flex pb-12 pt-8 lg:h-full lg:items-center lg:py-0">
               <div key={feature.name} className="reveal max-w-[560px] text-primary-foreground" aria-live="polite">
                 <p className="devanagari text-3xl text-gold-light">{feature.dev}</p>
-                <h3 className="mt-2 text-7xl leading-none lg:text-[7.5rem]">{feature.name}</h3>
+                <h3 className="mt-2 text-6xl leading-none sm:text-7xl lg:text-[7.5rem]">{feature.name}</h3>
                 <p className="mt-5 font-display text-3xl italic text-gold-light">{feature.line}</p>
                 <p className="mt-5 text-lg leading-[1.7] text-primary-foreground/85 lg:text-xl">{feature.body}</p>
               </div>
             </div>
           </div>
 
-          <div className="page-shell mt-6 grid grid-cols-4 gap-3 sm:grid-cols-7" role="tablist" aria-label="Choose a pendant mode">
+          <div className="page-shell mt-6 flex snap-x gap-3 overflow-x-auto pb-2 sm:grid sm:grid-cols-7 sm:overflow-visible sm:pb-0" role="tablist" aria-label="Choose a pendant mode">
             {features.map((f, i) => (
-              <button key={f.name} role="tab" aria-selected={i === active} onClick={() => setActive(i)} className={`thumb group text-left ${i === active ? "is-active" : ""}`}>
+              <button key={f.name} role="tab" aria-selected={i === active} onClick={() => setActive(i)} className={`thumb group w-[7.5rem] shrink-0 snap-start text-left sm:w-auto ${i === active ? "is-active" : ""}`}>
                 <span className="block overflow-hidden rounded-[2px]"><PendantPicture image={f.image} alt="" sizes="180px" className="aspect-[4/3] w-full object-cover" style={{ objectPosition: f.focus }} /></span>
                 <span className="mt-3 flex items-baseline gap-2 font-ui text-[15px]"><span className="text-gold-deep">0{i + 1}</span><span className="text-foreground">{f.name}</span></span>
               </button>
