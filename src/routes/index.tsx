@@ -305,7 +305,7 @@ function Home() {
           </div>
         </section>
 
-        {/* TECH (deep band) */}
+        {/* TECHNOLOGY (deep section) */}
         <section className="section-pad relative overflow-hidden bg-aubergine-deep text-primary-foreground">
           <div aria-hidden className="jali jali-dark absolute inset-0" />
           <div className="page-shell relative grid items-center gap-14 lg:grid-cols-[1.1fr_.9fr] lg:gap-20">
