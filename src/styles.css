@@ -291,10 +291,13 @@
 @media (min-width:1024px) { .product-console { grid-template-columns: 1.02fr .98fr; } }
 @media (max-width:639px) {
   .product-console-visual { min-height: 27rem; }
-  .product-console-visual img { object-position: 70% 30%; }
+  .product-console-visual img { object-position: 50% 55%; }
   .product-console-panel { padding: 1.5rem; }
   .care-tabs { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .care-readout { min-height: 15rem; }
   .product-console-panel > .grid { gap: 1rem; }
   .product-console-panel > .grid p:last-child { font-size: .78rem; line-height: 1.35; }
 }
+
+.life-card img { transition: transform 1.2s cubic-bezier(.22,1,.36,1); }
+.life-card:hover img { transform: scale(1.03); }
