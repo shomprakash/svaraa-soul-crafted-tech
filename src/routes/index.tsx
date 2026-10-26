@@ -227,7 +227,7 @@ function Home() {
         {/* PENDANT SHOWCASE */}
         <section id="pendant" className="section-pad">
           <div className="page-shell">
-            <div data-reveal className="grid items-end gap-8 lg:grid-cols-2">
+            <div data-reveal className="grid items-end gap-8 lg:grid-cols-[1.3fr_1fr]">
               <div><p className="eyebrow">The svaraa pendant</p><h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-[4.25rem]">Familiar in form.<br />Thoughtful in purpose.</h2></div>
               <p className="max-w-[520px] text-xl text-foreground/80 lg:justify-self-end">A bronze-set pendant on a rudraksha mala, with a deep-plum face and delicate floral detail. Designed to bring quiet technology into a form that feels personal and familiar.</p>
             </div>
@@ -354,7 +354,7 @@ function Home() {
                 <PendantPicture image={pendantImages.pendantInvitation} alt="svaraa pendant and rudraksha mala draped over curved ivory stone" sizes="(min-width: 1024px) 560px, 90vw" className="aspect-[16/10] w-full object-cover object-[43%_64%]" />
               </div>
             </div>
-            <form data-reveal onSubmit={submitWaitlist} noValidate className="grid content-start gap-6 border border-border bg-background p-8 lg:p-12">
+            <form data-reveal onSubmit={submitWaitlist} noValidate className="grid self-start gap-6 border border-border bg-background p-8 lg:p-12">
               <label className="font-ui text-[15px] text-foreground">Your name<input name="name" required maxLength={100} autoComplete="name" className="field" /></label>
               <label className="font-ui text-[15px] text-foreground">Phone number
                 <span className="mt-2 flex"><span className="flex h-14 items-center border border-r-0 border-input bg-pearl px-4 text-lg">+91</span><input name="phone" type="tel" required maxLength={20} autoComplete="tel" className="field !mt-0" /></span>
