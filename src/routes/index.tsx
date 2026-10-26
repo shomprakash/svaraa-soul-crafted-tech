@@ -228,12 +228,12 @@ function Home() {
         <section id="pendant" className="section-pad">
           <div className="page-shell">
             <div data-reveal className="grid items-end gap-8 lg:grid-cols-2">
-              <div><p className="eyebrow">The svaraa pendant</p><h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">Familiar in form.<br />Thoughtful in purpose.</h2></div>
+              <div><p className="eyebrow">The svaraa pendant</p><h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-[4.25rem]">Familiar in form.<br />Thoughtful in purpose.</h2></div>
               <p className="max-w-[520px] text-xl text-foreground/80 lg:justify-self-end">A bronze-set pendant on a rudraksha mala, with a deep-plum face and delicate floral detail. Designed to bring quiet technology into a form that feels personal and familiar.</p>
             </div>
             <div className="mt-16 grid gap-8 lg:grid-cols-[1.25fr_1fr]">
               <div data-reveal className="pendant-stage">
-                <PendantPicture image={pendantImages.pendantProduct} alt="The complete svaraa rudraksha mala with its pendant, laid flat on ivory" sizes="(min-width: 1024px) 680px, 100vw" className="size-full object-contain" />
+                <PendantPicture image={pendantImages.pendantProduct} alt="The complete svaraa rudraksha mala with its pendant, laid flat on ivory" sizes="(min-width: 1024px) 680px, 100vw" className="size-full object-cover" />
               </div>
               <div className="flex flex-col gap-8">
                 <div data-reveal className="overflow-hidden rounded-[2px]">

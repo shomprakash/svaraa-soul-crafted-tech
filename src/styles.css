@@ -233,8 +233,8 @@
   .film-hero-actions .btn { justify-content:center; }
 }
 
-.pendant-stage { display:flex; align-items:center; justify-content:center; aspect-ratio:1/1; overflow:hidden; border:1px solid var(--border); border-radius:2px; background:var(--pearl); padding:clamp(1rem,3vw,2.5rem); }
-.pendant-stage img { max-height:100%; }
+.pendant-stage { aspect-ratio:1/1; overflow:hidden; border-radius:2px; background:var(--champagne); }
+.pendant-stage img { display:block; }
 .pendant-details { display:grid; border-top:1px solid var(--border); }
 .pendant-details li { padding-block:1.4rem; border-bottom:1px solid var(--border); }
 .tech-frame { position:relative; justify-self:center; width:min(100%,30rem); padding:.75rem; border:1px solid color-mix(in oklab,var(--gold-light) 45%,transparent); border-radius:50% 50% 4px 4px / 26% 26% 4px 4px; }
