@@ -13,3 +13,4 @@
 
 - Keep `/assets` as an unlisted public brand library with immutable CDN-hosted downloadable masters, so internal collaborators can use stable files without exposing the page in public navigation.
 - Keep the homepage story product-first: wearable monitoring and seven modes precede the quieter spiritual rationale, so safety and utility lead the proposition.
+- Serve product photography through `PendantPicture` and the generated `src/lib/pendant-images.ts` (CDN WebP sizes plus JPEG fallback, masters kept as unused pointers), so every image is responsive and the originals stay recoverable.
