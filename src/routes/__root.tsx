@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
@@ -34,7 +35,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
@@ -78,10 +79,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "svaraa" },
-      { name: "description", content: "A wearable spiritual companion, crafted for prayer, presence and peace of mind." },
+      { name: "description", content: "A screenless pendant for everyday care, voice assistance and family connection." },
       { name: "author", content: "svaraa" },
       { property: "og:title", content: "svaraa" },
-      { property: "og:description", content: "Wear the stillness you seek." },
+      { property: "og:description", content: "A screenless pendant for everyday care, voice assistance and family connection." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
