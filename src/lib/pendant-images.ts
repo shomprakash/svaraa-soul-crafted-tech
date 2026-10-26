@@ -45,6 +45,29 @@ import svaraa_mode_riddle_640_webp from "@/assets/pendant/svaraa-mode-riddle-640
 import svaraa_mode_riddle_1080_webp from "@/assets/pendant/svaraa-mode-riddle-1080.webp.asset.json";
 import svaraa_mode_riddle_1112_webp from "@/assets/pendant/svaraa-mode-riddle-1112.webp.asset.json";
 import svaraa_mode_riddle_1112_jpg from "@/assets/pendant/svaraa-mode-riddle-1112.jpg.asset.json";
+import svaraa_pendant_macro_480_webp from "@/assets/pendant/svaraa-pendant-macro-480.webp.asset.json";
+import svaraa_pendant_macro_800_webp from "@/assets/pendant/svaraa-pendant-macro-800.webp.asset.json";
+import svaraa_pendant_macro_1280_webp from "@/assets/pendant/svaraa-pendant-macro-1280.webp.asset.json";
+import svaraa_pendant_macro_1600_webp from "@/assets/pendant/svaraa-pendant-macro-1600.webp.asset.json";
+import svaraa_pendant_macro_1920_webp from "@/assets/pendant/svaraa-pendant-macro-1920.webp.asset.json";
+import svaraa_pendant_macro_1280_jpg from "@/assets/pendant/svaraa-pendant-macro-1280.jpg.asset.json";
+import svaraa_pendant_studio_480_webp from "@/assets/pendant/svaraa-pendant-studio-480.webp.asset.json";
+import svaraa_pendant_studio_800_webp from "@/assets/pendant/svaraa-pendant-studio-800.webp.asset.json";
+import svaraa_pendant_studio_1280_webp from "@/assets/pendant/svaraa-pendant-studio-1280.webp.asset.json";
+import svaraa_pendant_studio_1600_webp from "@/assets/pendant/svaraa-pendant-studio-1600.webp.asset.json";
+import svaraa_pendant_studio_1920_webp from "@/assets/pendant/svaraa-pendant-studio-1920.webp.asset.json";
+import svaraa_pendant_studio_1280_jpg from "@/assets/pendant/svaraa-pendant-studio-1280.jpg.asset.json";
+import svaraa_life_walk_480_webp from "@/assets/pendant/svaraa-life-walk-480.webp.asset.json";
+import svaraa_life_walk_610_webp from "@/assets/pendant/svaraa-life-walk-610.webp.asset.json";
+import svaraa_life_walk_610_jpg from "@/assets/pendant/svaraa-life-walk-610.jpg.asset.json";
+import svaraa_life_track_480_webp from "@/assets/pendant/svaraa-life-track-480.webp.asset.json";
+import svaraa_life_track_800_webp from "@/assets/pendant/svaraa-life-track-800.webp.asset.json";
+import svaraa_life_track_804_webp from "@/assets/pendant/svaraa-life-track-804.webp.asset.json";
+import svaraa_life_track_804_jpg from "@/assets/pendant/svaraa-life-track-804.jpg.asset.json";
+import svaraa_life_run_480_webp from "@/assets/pendant/svaraa-life-run-480.webp.asset.json";
+import svaraa_life_run_800_webp from "@/assets/pendant/svaraa-life-run-800.webp.asset.json";
+import svaraa_life_run_804_webp from "@/assets/pendant/svaraa-life-run-804.webp.asset.json";
+import svaraa_life_run_804_jpg from "@/assets/pendant/svaraa-life-run-804.jpg.asset.json";
 import og from "@/assets/pendant/svaraa-pendant-og.jpg.asset.json";
 
 export type PendantImage = { width: number; height: number; webp: { url: string; w: number }[]; fallback: string };
@@ -62,6 +85,11 @@ export const pendantImages = {
   modeRecall: { width: 1800, height: 774, webp: [{ url: svaraa_mode_recall_640_webp.url, w: 640 }, { url: svaraa_mode_recall_1080_webp.url, w: 1080 }, { url: svaraa_mode_recall_1600_webp.url, w: 1600 }], fallback: svaraa_mode_recall_1280_jpg.url },
   modeRepository: { width: 900, height: 675, webp: [{ url: svaraa_mode_repository_640_webp.url, w: 640 }, { url: svaraa_mode_repository_900_webp.url, w: 900 }], fallback: svaraa_mode_repository_900_jpg.url },
   modeRiddle: { width: 1112, height: 941, webp: [{ url: svaraa_mode_riddle_640_webp.url, w: 640 }, { url: svaraa_mode_riddle_1080_webp.url, w: 1080 }, { url: svaraa_mode_riddle_1112_webp.url, w: 1112 }], fallback: svaraa_mode_riddle_1112_jpg.url },
+  pendantWorn: { width: 1920, height: 1072, webp: [{ url: svaraa_pendant_macro_480_webp.url, w: 480 }, { url: svaraa_pendant_macro_800_webp.url, w: 800 }, { url: svaraa_pendant_macro_1280_webp.url, w: 1280 }, { url: svaraa_pendant_macro_1600_webp.url, w: 1600 }, { url: svaraa_pendant_macro_1920_webp.url, w: 1920 }], fallback: svaraa_pendant_macro_1280_jpg.url },
+  pendantStudio: { width: 1920, height: 1072, webp: [{ url: svaraa_pendant_studio_480_webp.url, w: 480 }, { url: svaraa_pendant_studio_800_webp.url, w: 800 }, { url: svaraa_pendant_studio_1280_webp.url, w: 1280 }, { url: svaraa_pendant_studio_1600_webp.url, w: 1600 }, { url: svaraa_pendant_studio_1920_webp.url, w: 1920 }], fallback: svaraa_pendant_studio_1280_jpg.url },
+  lifeWalk: { width: 610, height: 813, webp: [{ url: svaraa_life_walk_480_webp.url, w: 480 }, { url: svaraa_life_walk_610_webp.url, w: 610 }], fallback: svaraa_life_walk_610_jpg.url },
+  lifeTrack: { width: 804, height: 1072, webp: [{ url: svaraa_life_track_480_webp.url, w: 480 }, { url: svaraa_life_track_800_webp.url, w: 800 }, { url: svaraa_life_track_804_webp.url, w: 804 }], fallback: svaraa_life_track_804_jpg.url },
+  lifeRun: { width: 804, height: 1072, webp: [{ url: svaraa_life_run_480_webp.url, w: 480 }, { url: svaraa_life_run_800_webp.url, w: 800 }, { url: svaraa_life_run_804_webp.url, w: 804 }], fallback: svaraa_life_run_804_jpg.url },
 } satisfies Record<string, PendantImage>;
 
 /** Absolute social preview image on the primary domain. */
