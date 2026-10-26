@@ -57,6 +57,12 @@ const features = [
   { name: "Riddle", dev: "पहेली", line: "A little curiosity, every day.", body: "Enjoy spoken riddles, trivia and word games through your pendant, bringing moments of curiosity into the day.", image: pendantImages.modeRiddle, focus: "65% 66%", alt: "svaraa pendant on a sandstone plinth, with arches softly behind" },
 ];
 
+const lifeMoments = [
+  { title: "A morning walk", image: pendantImages.lifeWalk, focus: "50% 30%", alt: "A woman in her fifties walks down stone steps wearing the svaraa pendant" },
+  { title: "Warming up", image: pendantImages.lifeTrack, focus: "55% 30%", alt: "A man in his forties stretches on a running track, wearing the svaraa pendant" },
+  { title: "The evening run", image: pendantImages.lifeRun, focus: "50% 35%", alt: "A young woman jogs through a city park wearing the svaraa pendant" },
+];
+
 const careViews = [
   { label: "Wellbeing", icon: Activity, value: "Gentle awareness", note: "Everyday wellbeing awareness, shared with the family members you choose, without turning care into surveillance." },
   { label: "Fall watch", icon: ShieldCheck, value: "Designed to notice", note: "The pendant is designed to recognise possible falls, check in with the wearer and support alerts to chosen family contacts." },
@@ -177,7 +183,7 @@ function Home() {
 
             <div data-reveal className="product-console mt-14 lg:mt-20">
               <div className="product-console-visual">
-                <PendantPicture image={pendantImages.pendantStillness} alt="svaraa pendant with rudraksha beads resting on ivory silk" sizes="(min-width: 1024px) 620px, 100vw" className="size-full object-cover object-[60%_62%]" />
+                <PendantPicture image={pendantImages.pendantWorn} alt="The svaraa pendant worn close to the chest over a training top" sizes="(min-width: 1024px) 640px, 100vw" className="absolute inset-0 size-full object-cover object-[50%_55%]" />
                 <div className="product-console-caption">
                   <span className="status-pulse" aria-hidden />
                   <span>Illustrative care view</span>
@@ -237,13 +243,28 @@ function Home() {
               </div>
               <div className="flex flex-col gap-8">
                 <div data-reveal className="overflow-hidden rounded-[2px]">
-                  <PendantPicture image={pendantImages.pendantDetail} alt="Close view of the svaraa pendant on carved travertine beside a bowl of white flowers" sizes="(min-width: 1024px) 540px, 100vw" className="aspect-[4/3] w-full object-cover object-[52%_60%]" />
+                  <PendantPicture image={pendantImages.pendantStudio} alt="The svaraa pendant hanging from its rudraksha mala in soft studio light" sizes="(min-width: 1024px) 540px, 100vw" className="aspect-[4/3] w-full object-cover object-[50%_62%]" />
                 </div>
                 <ul data-reveal className="pendant-details">
                   {[["Rudraksha mala", "Natural beads with fine gold spacers, worn like a familiar necklace."], ["Bronze-set pendant", "A deep-plum face held in warm bronze, finished with a floral emblem."], ["Screenless interaction", "Spoken, simple and calm. Nothing to tap, swipe or learn."]].map(([t, d]) => (
                     <li key={t}><h3 className="text-3xl text-primary">{t}</h3><p className="mt-1 text-foreground/75">{d}</p></li>
                   ))}
                 </ul>
+              </div>
+            </div>
+
+            <div className="mt-24 lg:mt-32">
+              <div data-reveal className="grid items-end gap-6 lg:grid-cols-[1.3fr_1fr]">
+                <div><p className="eyebrow">Worn through the day</p><h3 className="mt-4 text-4xl leading-[1.08] text-primary lg:text-[3.4rem]">At every age.<br /><em className="text-gold-deep">At every pace.</em></h3></div>
+                <p className="max-w-[520px] text-xl text-foreground/80 lg:justify-self-end">From a morning walk to an evening run, the pendant sits close and stays out of the way, so care keeps pace with the life it supports.</p>
+              </div>
+              <div className="-mx-4 mt-12 flex snap-x gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-8 sm:overflow-visible sm:px-0 sm:pb-0">
+                {lifeMoments.map((m, i) => (
+                  <figure data-reveal key={m.title} className="life-card w-[78%] shrink-0 snap-start sm:w-auto" style={{ transitionDelay: `${i * 80}ms` }}>
+                    <div className="overflow-hidden rounded-[2px]"><PendantPicture image={m.image} alt={m.alt} sizes="(min-width: 640px) 33vw, 78vw" className="aspect-[3/4] w-full object-cover" style={{ objectPosition: m.focus }} /></div>
+                    <figcaption className="mt-4 flex items-baseline gap-3 font-ui text-[15px]"><span className="text-gold-deep">0{i + 1}</span><span className="text-foreground">{m.title}</span></figcaption>
+                  </figure>
+                ))}
               </div>
             </div>
           </div>
