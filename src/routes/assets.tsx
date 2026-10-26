@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Download } from "lucide-react";
 import { Brand } from "@/components/Brand";
-import introSlide from "@/assets/brand-library/slide-01-product-introduction.png.asset.json";
-import featureSlide from "@/assets/brand-library/slide-02-product-features.png.asset.json";
-import sevenSlide from "@/assets/brand-library/slide-03-seven-svaraas.png.asset.json";
+import introSlide from "@/assets/brand-library/slide-01-product-introduction-pendant.png.asset.json";
+import featureSlide from "@/assets/brand-library/slide-02-product-features-pendant.png.asset.json";
+import sevenSlide from "@/assets/brand-library/slide-03-seven-modes-pendant.png.asset.json";
 import logoLight from "@/assets/brand-library/svaraa-logo-for-light.png.asset.json";
 import logoDark from "@/assets/brand-library/svaraa-logo-for-dark.png.asset.json";
 import emblemLight from "@/assets/brand-library/svaraa-emblem-for-light.png.asset.json";
@@ -46,9 +46,9 @@ const identityAssets: Asset[] = [
 ];
 
 const slides: Asset[] = [
-  { title: "01 · Product introduction", note: "PNG · 1920 × 1080 · 16:9", src: introSlide.url, fileName: "slide-01-product-introduction.png" },
-  { title: "02 · Product features", note: "PNG · 1920 × 1080 · 16:9", src: featureSlide.url, fileName: "slide-02-product-features.png" },
-  { title: "03 · The seven svaraas", note: "PNG · 1920 × 1080 · 16:9", src: sevenSlide.url, fileName: "slide-03-seven-svaraas.png" },
+  { title: "01 · Product introduction", note: "PNG · 1920 × 1080 · 16:9", src: introSlide.url, fileName: "slide-01-product-introduction-pendant.png" },
+  { title: "02 · Product features", note: "PNG · 1920 × 1080 · 16:9", src: featureSlide.url, fileName: "slide-02-product-features-pendant.png" },
+  { title: "03 · The seven modes", note: "PNG · 1920 × 1080 · 16:9", src: sevenSlide.url, fileName: "slide-03-seven-modes-pendant.png" },
 ];
 
 function AssetCard({ asset }: { asset: Asset }) {
