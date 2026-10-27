@@ -163,21 +163,50 @@ function AssetsPage() {
       </header>
 
       <main>
-        <section className="relative overflow-hidden border-b border-border bg-champagne py-20 lg:py-28">
+        <section className="relative overflow-hidden border-b border-border bg-champagne py-14 lg:py-16">
           <div aria-hidden className="jali absolute inset-0 opacity-60" />
           <div className="page-shell relative">
-            <p className="eyebrow">Official library · September 2026</p>
-            <h1 className="mt-5 max-w-[900px] text-6xl leading-[.98] text-primary sm:text-7xl lg:text-[6rem]">svaraa brand assets</h1>
-            <p className="mt-7 max-w-[670px] text-xl leading-[1.7] text-foreground/80">
+            <p className="eyebrow">Official library · October 2026</p>
+            <h1 className="mt-4 max-w-[900px] text-5xl leading-[.98] text-primary sm:text-6xl lg:text-[4.75rem]">svaraa brand assets</h1>
+            <p className="mt-5 max-w-[670px] text-xl leading-[1.7] text-foreground/80">
               Transparent identity files and presentation-ready artwork for considered, consistent use of svaraa.
             </p>
           </div>
         </section>
 
-        <section className="section-pad">
+        <section id="colour-sets" className="section-pad">
+          <div className="page-shell">
+            <div className="max-w-[820px]">
+              <p className="numeral">01</p>
+              <p className="eyebrow mt-2">Logo colour sets</p>
+              <h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">One logo. Ten ways to sit well.</h2>
+              <p className="mt-6 text-xl text-foreground/75">
+                The same emblem, the same lettering, the same proportions. Only the maroon and gold tones change, so the logo stays clear on every surface. Each file is a transparent PNG at 1218 × 456.
+              </p>
+            </div>
+
+            <div className="mt-16 flex items-baseline justify-between gap-6 border-t border-border pt-6">
+              <h3 className="font-display text-3xl italic text-primary">For light backgrounds</h3>
+              <p className="font-ui text-[13px] uppercase tracking-[0.18em] text-muted-foreground">Five sets</p>
+            </div>
+            <div className="mt-8 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+              {lightSets.map((set) => <ColourSetCard key={set.fileName} set={set} />)}
+            </div>
+
+            <div className="mt-20 flex items-baseline justify-between gap-6 border-t border-border pt-6">
+              <h3 className="font-display text-3xl italic text-primary">For dark backgrounds</h3>
+              <p className="font-ui text-[13px] uppercase tracking-[0.18em] text-muted-foreground">Five sets</p>
+            </div>
+            <div className="mt-8 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+              {darkSets.map((set) => <ColourSetCard key={set.fileName} set={set} />)}
+            </div>
+          </div>
+        </section>
+
+        <section className="section-pad border-t border-border bg-pearl">
           <div className="page-shell">
             <div className="max-w-[760px]">
-              <p className="numeral">01</p>
+              <p className="numeral">02</p>
               <p className="eyebrow mt-2">Identity</p>
               <h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">Logo, emblem and wordmark.</h2>
               <p className="mt-6 text-xl text-foreground/75">Choose the version made for the background it will sit on. Every file has a transparent background.</p>
@@ -188,10 +217,10 @@ function AssetsPage() {
           </div>
         </section>
 
-        <section className="section-pad border-t border-border bg-pearl">
+        <section className="section-pad border-t border-border">
           <div className="page-shell">
             <div className="max-w-[840px]">
-              <p className="numeral">02</p>
+              <p className="numeral">03</p>
               <p className="eyebrow mt-2">Presentation artwork</p>
               <h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">Three stories, ready to stand alone.</h2>
               <p className="mt-6 text-xl text-foreground/75">Each 16:9 master is composed at 1920 × 1080 for presentations, advertising and future video inserts.</p>
