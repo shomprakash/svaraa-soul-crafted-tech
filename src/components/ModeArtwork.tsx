@@ -78,7 +78,7 @@ function Remind() {
         const [x2, y2] = pt(118, i * 30);
         return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} className="stroke-gold-light/80" strokeWidth={i % 3 === 0 ? 2 : 1} />;
       })}
-      <circle cx={C} cy={C} r={136} pathLength={1} className="ma-sweep fill-none stroke-gold-light/70" strokeWidth={1.5} transform={`rotate(-90 ${C} ${C})`} />
+      <g transform={`rotate(-90 ${C} ${C})`}><circle cx={C} cy={C} r={136} pathLength={1} className="ma-sweep fill-none stroke-gold-light/70" strokeWidth={1.5} /></g>
       {marks.map((deg, i) => {
         const [x, y] = pt(136, deg);
         return (

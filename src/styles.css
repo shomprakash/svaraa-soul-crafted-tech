@@ -245,7 +245,7 @@
 /* Seven modes: animated line artwork */
 .mode-stage { background:radial-gradient(ellipse 60% 70% at 72% 50%, color-mix(in oklab,var(--gold) 16%,transparent), transparent 70%), var(--aubergine-deep); }
 .mode-art { display:block; width:100%; height:auto; overflow:visible; }
-.mode-art * { transform-box:view-box; transform-origin:200px 200px; }
+.mode-art [class*="ma-"] { transform-box:view-box; transform-origin:200px 200px; }
 .mode-art .ma-enter { animation:ma-enter 1s cubic-bezier(.22,1,.36,1) both; }
 .mode-art .ma-spin { animation:ma-spin 120s linear infinite; }
 .mode-art .ma-spin-rev { animation:ma-spin 160s linear infinite reverse; }
