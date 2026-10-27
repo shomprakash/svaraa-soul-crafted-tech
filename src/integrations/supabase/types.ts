@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      site_content: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       waitlist_leads: {
         Row: {
           created_at: string
