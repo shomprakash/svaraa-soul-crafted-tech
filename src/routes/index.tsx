@@ -9,8 +9,8 @@ import { getSiteContent } from "@/lib/content.functions";
 import { modeIds, resolveContent } from "@/lib/site-content";
 import { supabase } from "@/integrations/supabase/client";
 import { pendantImages, pendantOgImage } from "@/lib/pendant-images";
-import productFilmAsset from "@/assets/svaraa-product-film.webm.asset.json";
-import productFilmPosterAsset from "@/assets/svaraa-product-film-poster.jpg.asset.json";
+import productFilmAsset from "@/assets/svaraa-reel.webm.asset.json";
+import productFilmPosterAsset from "@/assets/svaraa-reel-poster.jpg.asset.json";
 import founder01 from "@/assets/founder-01.jpg";
 import founder02 from "@/assets/founder-02.jpg";
 
