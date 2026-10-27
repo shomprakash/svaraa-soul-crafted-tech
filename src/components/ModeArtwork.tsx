@@ -61,7 +61,7 @@ function Respond() {
         </g>
       ))}
       {heights.map((h, i) => (
-        <rect key={i} x={C - 7 * 15 / 2 * 1.6 + i * 11.2 - 2} y={C - h / 2} width={4} height={h} rx={2} className="ma-bar fill-gold-light" style={d(i * 90)} />
+        <rect key={i} x={C - 78.4 + i * 11.2 - 2} y={C - h / 2} width={4} height={h} rx={2} className="ma-bar fill-gold-light" style={d(i * 90)} />
       ))}
       <line x1={C - 130} y1={C} x2={C + 130} y2={C} className="stroke-gold/25" strokeWidth={1} />
     </g>
