@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Activity, ArrowLeft, ArrowRight, ArrowUpRight, BatteryMedium, Droplets, Languages, Menu, Radio, ShieldCheck, X } from "lucide-react";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Brand, SvaraaEmblem } from "@/components/Brand";
 import { PendantPicture } from "@/components/PendantPicture";
+import { RichText, plainText } from "@/components/RichText";
+import { getSiteContent } from "@/lib/content.functions";
+import { modeIds, resolveContent } from "@/lib/site-content";
 import { supabase } from "@/integrations/supabase/client";
 import { pendantImages, pendantOgImage } from "@/lib/pendant-images";
 import productFilmAsset from "@/assets/svaraa-product-film.webm.asset.json";
@@ -10,8 +13,6 @@ import productFilmPosterAsset from "@/assets/svaraa-product-film-poster.jpg.asse
 import founder01 from "@/assets/founder-01.jpg";
 import founder02 from "@/assets/founder-02.jpg";
 
-const pageTitle = "svaraa | A screenless pendant for everyday care";
-const pageDescription = "Meet the svaraa pendant: a screenless rudraksha mala designed for everyday care, voice assistance and family connection.";
 const ogImageAlt = "The svaraa pendant on a rudraksha mala, resting on a sandstone plinth in warm light";
 
 const productSchema = {
@@ -24,7 +25,12 @@ const productSchema = {
 };
 
 export const Route = createFileRoute("/")({
-  head: () => ({
+  loader: () => getSiteContent(),
+  head: ({ loaderData }) => {
+    const c = resolveContent(loaderData?.overrides);
+    const pageTitle = plainText(c["seo.title"]!);
+    const pageDescription = plainText(c["seo.description"]!);
+    return {
     meta: [
       { title: pageTitle },
       { name: "description", content: pageDescription },
@@ -43,32 +49,28 @@ export const Route = createFileRoute("/")({
     ],
     links: [{ rel: "canonical", href: "/" }],
     scripts: [{ type: "application/ld+json", children: JSON.stringify(productSchema) }],
-  }),
+    };
+  },
   component: Home,
 });
 
-const features = [
-  { name: "Recite", dev: "पाठ", line: "Your daily practice, on time.", body: "Bring prayer and reflection into your routine with familiar audio, played through your svaraa pendant at your chosen times.", image: pendantImages.modeRecite, focus: "61% 66%", alt: "svaraa pendant on a rudraksha mala resting on draped ivory silk" },
-  { name: "Respond", dev: "उत्तर", line: "Answers, simply spoken.", body: "Speak to your svaraa pendant for everyday questions and spoken answers in supported languages.", image: pendantImages.modeRespond, focus: "65% 60%", alt: "svaraa pendant leaning against carved travertine in warm light" },
-  { name: "Remind", dev: "स्मरण", line: "Care that arrives gently.", body: "Let your pendant offer gentle spoken reminders for the routines and appointments you have set.", image: pendantImages.modeRemind, focus: "65% 60%", alt: "svaraa pendant and rudraksha mala draped over curved ivory stone" },
-  { name: "Rescue", dev: "रक्षा", line: "Support, closer at hand.", body: "The pendant is designed to recognise possible falls and support alerts to connected family members. Voice assistance helps make asking for support more accessible.", image: pendantImages.modeRescue, focus: "71% 66%", alt: "svaraa pendant on a rudraksha mala against a deep plum backdrop" },
-  { name: "Recall", dev: "स्मृति", line: "A second memory for life's details.", body: "Use your pendant's voice features to revisit the personal details and moments you have chosen to save.", image: pendantImages.modeRecall, focus: "65% 75%", alt: "svaraa pendant and rudraksha beads on a plain ivory surface" },
-  { name: "Repository", dev: "कोश", line: "Information, ready to be heard.", body: "Access supported audio content and information through your pendant, with spoken interaction at the centre of the experience.", image: pendantImages.modeRepository, focus: "66% 52%", alt: "Close view of the svaraa pendant's floral face on travertine" },
-  { name: "Riddle", dev: "पहेली", line: "A little curiosity, every day.", body: "Enjoy spoken riddles, trivia and word games through your pendant, bringing moments of curiosity into the day.", image: pendantImages.modeRiddle, focus: "65% 66%", alt: "svaraa pendant on a sandstone plinth, with arches softly behind" },
-];
+const modeVisuals: Record<string, { image: (typeof pendantImages)[keyof typeof pendantImages]; focus: string; alt: string }> = {
+  recite: { image: pendantImages.modeRecite, focus: "61% 66%", alt: "svaraa pendant on a rudraksha mala resting on draped ivory silk" },
+  respond: { image: pendantImages.modeRespond, focus: "65% 60%", alt: "svaraa pendant leaning against carved travertine in warm light" },
+  remind: { image: pendantImages.modeRemind, focus: "65% 60%", alt: "svaraa pendant and rudraksha mala draped over curved ivory stone" },
+  rescue: { image: pendantImages.modeRescue, focus: "71% 66%", alt: "svaraa pendant on a rudraksha mala against a deep plum backdrop" },
+  recall: { image: pendantImages.modeRecall, focus: "65% 75%", alt: "svaraa pendant and rudraksha beads on a plain ivory surface" },
+  repository: { image: pendantImages.modeRepository, focus: "66% 52%", alt: "Close view of the svaraa pendant's floral face on travertine" },
+  riddle: { image: pendantImages.modeRiddle, focus: "65% 66%", alt: "svaraa pendant on a sandstone plinth, with arches softly behind" },
+};
 
 const lifeMoments = [
-  { title: "A morning walk", image: pendantImages.lifeWalk, focus: "50% 30%", alt: "A woman in her fifties walks down stone steps wearing the svaraa pendant" },
-  { title: "Warming up", image: pendantImages.lifeTrack, focus: "55% 30%", alt: "A man in his forties stretches on a running track, wearing the svaraa pendant" },
-  { title: "The evening run", image: pendantImages.lifeRun, focus: "50% 35%", alt: "A young woman jogs through a city park wearing the svaraa pendant" },
+  { key: "life.1", image: pendantImages.lifeWalk, focus: "50% 30%", alt: "A woman in her fifties walks down stone steps wearing the svaraa pendant" },
+  { key: "life.2", image: pendantImages.lifeTrack, focus: "55% 30%", alt: "A man in his forties stretches on a running track, wearing the svaraa pendant" },
+  { key: "life.3", image: pendantImages.lifeRun, focus: "50% 35%", alt: "A young woman jogs through a city park wearing the svaraa pendant" },
 ];
 
-const careViews = [
-  { label: "Wellbeing", icon: Activity, value: "Gentle awareness", note: "Everyday wellbeing awareness, shared with the family members you choose, without turning care into surveillance." },
-  { label: "Fall watch", icon: ShieldCheck, value: "Designed to notice", note: "The pendant is designed to recognise possible falls, check in with the wearer and support alerts to chosen family contacts." },
-  { label: "Family alerts", icon: Radio, value: "Chosen contacts", note: "Supported updates and safety alerts can reach the people who need to know, wherever they are." },
-  { label: "Power", icon: BatteryMedium, value: "Up to 7 days", note: "A long-lasting charge keeps the pendant present through daily routines, nights and travel." },
-];
+const careIcons = [Activity, ShieldCheck, Radio, BatteryMedium];
 
 function useReveal() {
   useEffect(() => {
@@ -80,6 +82,12 @@ function useReveal() {
 }
 
 function Home() {
+  const { overrides } = Route.useLoaderData();
+  const c = useMemo(() => resolveContent(overrides), [overrides]);
+  const t = (key: string) => c[key] ?? "";
+  const rich = (key: string, accent?: string) => <RichText text={t(key)} accentClassName={accent} />;
+  const features = modeIds.map((id) => ({ id, name: t(`modes.${id}.name`), dev: t(`modes.${id}.dev`), line: t(`modes.${id}.line`), body: t(`modes.${id}.body`), ...modeVisuals[id]! }));
+  const careViews = careIcons.map((icon, i) => ({ icon, label: t(`care.tab${i + 1}.label`), value: t(`care.tab${i + 1}.value`), note: t(`care.tab${i + 1}.note`) }));
   const [active, setActive] = useState(3);
   const [careView, setCareView] = useState(0);
   const [menu, setMenu] = useState(false);
@@ -123,7 +131,7 @@ function Home() {
     formEl.reset(); setStatus("done");
   }
 
-  const nav = [["#product", "The pendant"], ["#seven", "Seven modes"], ["#why", "Why svaraa"], ["#makers", "Makers"]];
+  const nav = [["#product", t("nav.product")], ["#seven", t("nav.seven")], ["#why", t("nav.why")], ["#makers", t("nav.makers")]];
 
   return (
     <div className="relative">
@@ -136,11 +144,11 @@ function Home() {
             {nav.map(([h, l]) => <a key={h} href={h} className="link-sweep">{l}</a>)}
           </nav>
           <div className="hidden lg:flex">
-            <a href="#waitlist" className="btn btn-primary">Join the waitlist</a>
+            <a href="#waitlist" className="btn btn-primary">{t("nav.cta")}</a>
           </div>
           <button className="flex items-center gap-2 font-ui lg:hidden" aria-label="Menu" aria-expanded={menu} onClick={() => setMenu(!menu)}>{menu ? <X /> : <Menu />}Menu</button>
         </div>
-        {menu && <nav className="flex flex-col border-t border-border bg-background px-6 pb-6 font-ui text-lg lg:hidden" aria-label="Mobile">{[...nav, ["#waitlist", "Join the waitlist"]].map(([h, l]) => <a key={h} className="border-b border-border py-4" href={h} onClick={() => setMenu(false)}>{l}</a>)}</nav>}
+        {menu && <nav className="flex flex-col border-t border-border bg-background px-6 pb-6 font-ui text-lg lg:hidden" aria-label="Mobile">{[...nav, ["#waitlist", t("nav.cta")]].map(([h, l]) => <a key={h} className="border-b border-border py-4" href={h} onClick={() => setMenu(false)}>{l}</a>)}</nav>}
       </header>
 
       <main id="top">
@@ -161,11 +169,11 @@ function Home() {
           <div className="film-hero-overlay" aria-hidden />
           <div className="film-hero-frame" aria-hidden />
           <div className="page-shell film-hero-content">
-            <h1 id="film-heading">Wear the stillness you seek</h1>
-            <p className="film-hero-sub">A screenless pendant for everyday care, connection and stillness.</p>
+            <h1 id="film-heading">{rich("hero.heading")}</h1>
+            <p className="film-hero-sub">{rich("hero.sub")}</p>
             <div className="film-hero-actions">
-              <a href="#product" className="btn btn-hero-light">Discover the pendant</a>
-              <a href="#waitlist" className="btn btn-hero-outline">Join the waitlist</a>
+              <a href="#product" className="btn btn-hero-light">{t("hero.cta1")}</a>
+              <a href="#waitlist" className="btn btn-hero-outline">{t("hero.cta2")}</a>
             </div>
           </div>
         </section>
@@ -176,9 +184,9 @@ function Home() {
           <div className="page-shell relative py-20 lg:py-28">
             <div data-reveal className="mx-auto max-w-[900px] text-center">
               <p className="numeral">01</p>
-              <p className="eyebrow mt-2">A screenless pendant for everyday care</p>
-              <h2 className="mt-5 text-5xl leading-[1.02] text-primary sm:text-6xl lg:text-[5.5rem]">Know they are well.<br /><em className="text-gold-deep">Wherever you are.</em></h2>
-              <p className="mx-auto mt-7 max-w-[720px] text-xl leading-[1.7] text-foreground/80">Worn around the neck on a rudraksha mala, the svaraa pendant brings wellbeing awareness, voice assistance and family connection into everyday life. A familiar presence, without another screen to manage.</p>
+              <p className="eyebrow mt-2">{t("care.eyebrow")}</p>
+              <h2 className="mt-5 text-5xl leading-[1.02] text-primary sm:text-6xl lg:text-[5.5rem]">{rich("care.heading", "text-gold-deep")}</h2>
+              <p className="mx-auto mt-7 max-w-[720px] text-xl leading-[1.7] text-foreground/80">{rich("care.body", "text-gold-deep")}</p>
             </div>
 
             <div data-reveal className="product-console mt-14 lg:mt-20">
@@ -186,24 +194,24 @@ function Home() {
                 <PendantPicture image={pendantImages.pendantWorn} alt="The svaraa pendant worn close to the chest over a training top" sizes="(min-width: 1024px) 640px, 100vw" className="absolute inset-0 size-full object-cover object-[50%_55%]" />
                 <div className="product-console-caption">
                   <span className="status-pulse" aria-hidden />
-                  <span>Illustrative care view</span>
+                  <span>{t("care.caption")}</span>
                 </div>
               </div>
 
               <div className="product-console-panel">
                 <div className="flex items-start justify-between gap-5 border-b border-border pb-7">
-                  <div><p className="font-ui text-[15px] uppercase text-gold-deep">Care view, illustrated</p><h3 className="mt-2 text-4xl text-primary">Close to them.<br />Clear for you.</h3></div>
+                  <div><p className="font-ui text-[15px] uppercase text-gold-deep">{t("care.panelLabel")}</p><h3 className="mt-2 text-4xl text-primary">{rich("care.panelHeading", "text-gold-deep")}</h3></div>
                   <SvaraaEmblem className="size-12 shrink-0 text-gold" />
                 </div>
 
                 <div className="care-tabs mt-7" role="tablist" aria-label="Explore svaraa pendant care views">
                   {careViews.map((view, index) => {
                     const Icon = view.icon;
-                    return <button key={view.label} type="button" role="tab" aria-selected={careView === index} onClick={() => setCareView(index)} className={`care-tab ${careView === index ? "is-active" : ""}`}><Icon size={19} /><span>{view.label}</span></button>;
+                    return <button key={index} type="button" role="tab" aria-selected={careView === index} onClick={() => setCareView(index)} className={`care-tab ${careView === index ? "is-active" : ""}`}><Icon size={19} /><span>{view.label}</span></button>;
                   })}
                 </div>
 
-                <div key={selectedCareView.label} className="care-readout reveal mt-8" role="tabpanel">
+                <div key={careView} className="care-readout reveal mt-8" role="tabpanel">
                   <p className="font-ui text-[15px] text-muted-foreground">{selectedCareView.label}</p>
                   <p className="mt-2 font-display text-[2.6rem] leading-none text-primary">{selectedCareView.value}</p>
                   <div className="care-signal" aria-hidden><span /><span /><span /><span /><span /></div>
@@ -211,11 +219,11 @@ function Home() {
                 </div>
 
                 <div className="mt-8 grid grid-cols-3 border-t border-border pt-7">
-                  <div><Droplets className="mb-2 text-gold-deep" size={21} /><p className="font-display text-2xl text-primary">IP68</p><p className="font-ui text-[15px] text-muted-foreground">Water resistant</p></div>
-                  <div><BatteryMedium className="mb-2 text-gold-deep" size={21} /><p className="font-display text-2xl text-primary">7 days</p><p className="font-ui text-[15px] text-muted-foreground">Battery life</p></div>
-                  <div><Languages className="mb-2 text-gold-deep" size={21} /><p className="font-display text-2xl text-primary">Indian</p><p className="font-ui text-[15px] text-muted-foreground">Languages</p></div>
+                  <div><Droplets className="mb-2 text-gold-deep" size={21} /><p className="font-display text-2xl text-primary">{t("care.stat1.value")}</p><p className="font-ui text-[15px] text-muted-foreground">{t("care.stat1.label")}</p></div>
+                  <div><BatteryMedium className="mb-2 text-gold-deep" size={21} /><p className="font-display text-2xl text-primary">{t("care.stat2.value")}</p><p className="font-ui text-[15px] text-muted-foreground">{t("care.stat2.label")}</p></div>
+                  <div><Languages className="mb-2 text-gold-deep" size={21} /><p className="font-display text-2xl text-primary">{t("care.stat3.value")}</p><p className="font-ui text-[15px] text-muted-foreground">{t("care.stat3.label")}</p></div>
                 </div>
-                <p className="mt-6 font-ui text-[15px] leading-relaxed text-muted-foreground">Designed for wellbeing awareness and timely assistance, not medical diagnosis. Views shown here are illustrative, not real wearer data.</p>
+                <p className="mt-6 font-ui text-[15px] leading-relaxed text-muted-foreground">{t("care.disclaimer")}</p>
               </div>
             </div>
           </div>
@@ -224,8 +232,8 @@ function Home() {
         {/* TRUST */}
         <div className="border-y border-border bg-champagne">
           <div className="page-shell grid grid-cols-2 gap-y-6 py-8 text-center md:grid-cols-4">
-            {[["Screenless", "Voice-first design"], ["IP68", "Water resistant"], ["7 days", "Battery life"], ["Indian", "Languages"]].map(([a, b]) => (
-              <div key={a} className="md:border-r md:border-border md:last:border-0"><p className="font-display text-3xl text-primary">{a}</p><p className="font-ui text-[15px] text-muted-foreground">{b}</p></div>
+            {[1, 2, 3, 4].map((n) => [t(`trust.${n}.value`), t(`trust.${n}.label`)]).map(([a, b], i) => (
+              <div key={i} className="md:border-r md:border-border md:last:border-0"><p className="font-display text-3xl text-primary">{a}</p><p className="font-ui text-[15px] text-muted-foreground">{b}</p></div>
             ))}
           </div>
         </div>
@@ -234,8 +242,8 @@ function Home() {
         <section id="pendant" className="section-pad">
           <div className="page-shell">
             <div data-reveal className="grid items-end gap-8 lg:grid-cols-[1.3fr_1fr]">
-              <div><p className="eyebrow">The svaraa pendant</p><h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-[4.25rem]">Familiar in form.<br />Thoughtful in purpose.</h2></div>
-              <p className="max-w-[520px] text-xl text-foreground/80 lg:justify-self-end">A bronze-set pendant on a rudraksha mala, with a deep-plum face and delicate floral detail. Designed to bring quiet technology into a form that feels personal and familiar.</p>
+              <div><p className="eyebrow">{t("pendant.eyebrow")}</p><h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-[4.25rem]">{rich("pendant.heading", "text-gold-deep")}</h2></div>
+              <p className="max-w-[520px] text-xl text-foreground/80 lg:justify-self-end">{rich("pendant.body", "text-gold-deep")}</p>
             </div>
             <div className="mt-16 grid gap-8 lg:grid-cols-[1.25fr_1fr]">
               <div data-reveal className="pendant-stage">
@@ -246,8 +254,8 @@ function Home() {
                   <PendantPicture image={pendantImages.pendantStudio} alt="The svaraa pendant hanging from its rudraksha mala in soft studio light" sizes="(min-width: 1024px) 540px, 100vw" className="aspect-[4/3] w-full object-cover object-[50%_62%]" />
                 </div>
                 <ul data-reveal className="pendant-details">
-                  {[["Rudraksha mala", "Natural beads with fine gold spacers, worn like a familiar necklace."], ["Bronze-set pendant", "A deep-plum face held in warm bronze, finished with a floral emblem."], ["Screenless interaction", "Spoken, simple and calm. Nothing to tap, swipe or learn."]].map(([t, d]) => (
-                    <li key={t}><h3 className="text-3xl text-primary">{t}</h3><p className="mt-1 text-foreground/75">{d}</p></li>
+                  {[1, 2, 3].map((n) => [t(`pendant.detail${n}.title`), t(`pendant.detail${n}.body`)]).map(([title, d], i) => (
+                    <li key={i}><h3 className="text-3xl text-primary">{title}</h3><p className="mt-1 text-foreground/75">{d}</p></li>
                   ))}
                 </ul>
               </div>
@@ -255,14 +263,14 @@ function Home() {
 
             <div className="mt-24 lg:mt-32">
               <div data-reveal className="grid items-end gap-6 lg:grid-cols-[1.3fr_1fr]">
-                <div><p className="eyebrow">Worn through the day</p><h3 className="mt-4 text-4xl leading-[1.08] text-primary lg:text-[3.4rem]">At every age.<br /><em className="text-gold-deep">At every pace.</em></h3></div>
-                <p className="max-w-[520px] text-xl text-foreground/80 lg:justify-self-end">From a morning walk to an evening run, the pendant sits close and stays out of the way, so care keeps pace with the life it supports.</p>
+                <div><p className="eyebrow">{t("life.eyebrow")}</p><h3 className="mt-4 text-4xl leading-[1.08] text-primary lg:text-[3.4rem]">{rich("life.heading", "text-gold-deep")}</h3></div>
+                <p className="max-w-[520px] text-xl text-foreground/80 lg:justify-self-end">{rich("life.body", "text-gold-deep")}</p>
               </div>
               <div className="-mx-4 mt-12 flex snap-x gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-8 sm:overflow-visible sm:px-0 sm:pb-0">
                 {lifeMoments.map((m, i) => (
-                  <figure data-reveal key={m.title} className="life-card w-[78%] shrink-0 snap-start sm:w-auto" style={{ transitionDelay: `${i * 80}ms` }}>
+                  <figure data-reveal key={m.key} className="life-card w-[78%] shrink-0 snap-start sm:w-auto" style={{ transitionDelay: `${i * 80}ms` }}>
                     <div className="overflow-hidden rounded-[2px]"><PendantPicture image={m.image} alt={m.alt} sizes="(min-width: 640px) 33vw, 78vw" className="aspect-[3/4] w-full object-cover" style={{ objectPosition: m.focus }} /></div>
-                    <figcaption className="mt-4 flex items-baseline gap-3 font-ui text-[15px]"><span className="text-gold-deep">0{i + 1}</span><span className="text-foreground">{m.title}</span></figcaption>
+                    <figcaption className="mt-4 flex items-baseline gap-3 font-ui text-[15px]"><span className="text-gold-deep">0{i + 1}</span><span className="text-foreground">{t(m.key)}</span></figcaption>
                   </figure>
                 ))}
               </div>
@@ -273,7 +281,7 @@ function Home() {
         {/* SEVEN */}
         <section id="seven" className="section-pad">
           <div className="page-shell mb-12 flex flex-wrap items-end justify-between gap-8" data-reveal>
-            <div><p className="numeral">02</p><p className="eyebrow mt-2">Seven modes, one pendant</p><h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">Everyday support.<br />Within easy reach.</h2></div>
+            <div><p className="numeral">02</p><p className="eyebrow mt-2">{t("modes.eyebrow")}</p><h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">{rich("modes.heading", "text-gold-deep")}</h2></div>
             <div className="flex items-center gap-4">
               <span className="font-ui text-lg text-muted-foreground"><span className="text-primary">0{active + 1}</span> / 07</span>
               <button onClick={() => go(-1)} aria-label="Previous mode" className="round-btn"><ArrowLeft /></button>
@@ -284,12 +292,12 @@ function Home() {
           <div className="relative w-full overflow-hidden bg-aubergine-deep lg:h-[78svh] lg:min-h-[560px]">
             <div className="relative aspect-[4/3] sm:aspect-[16/9] lg:absolute lg:inset-0 lg:aspect-auto">
               {features.map((f, i) => (
-                <PendantPicture key={f.name} image={f.image} alt={i === active ? f.alt : ""} sizes="100vw" className={`slide-img absolute inset-0 size-full object-cover ${i === active ? "is-active" : ""}`} style={{ objectPosition: f.focus }} />
+                <PendantPicture key={f.id} image={f.image} alt={i === active ? f.alt : ""} sizes="100vw" className={`slide-img absolute inset-0 size-full object-cover ${i === active ? "is-active" : ""}`} style={{ objectPosition: f.focus }} />
               ))}
               <div className="absolute inset-0 bg-gradient-to-t from-aubergine-deep/70 via-transparent to-transparent lg:bg-gradient-to-r lg:from-aubergine-deep/90 lg:via-aubergine-deep/40" />
             </div>
             <div className="page-shell relative flex pb-12 pt-8 lg:h-full lg:items-center lg:py-0">
-              <div key={feature.name} className="reveal max-w-[560px] text-primary-foreground" aria-live="polite">
+              <div key={feature.id} className="reveal max-w-[560px] text-primary-foreground" aria-live="polite">
                 <p className="devanagari text-3xl text-gold-light">{feature.dev}</p>
                 <h3 className="mt-2 text-6xl leading-none sm:text-7xl lg:text-[7.5rem]">{feature.name}</h3>
                 <p className="mt-5 font-display text-3xl italic text-gold-light">{feature.line}</p>
@@ -300,7 +308,7 @@ function Home() {
 
           <div className="page-shell mt-6 flex snap-x gap-3 overflow-x-auto pb-2 sm:grid sm:grid-cols-7 sm:overflow-visible sm:pb-0" role="tablist" aria-label="Choose a pendant mode">
             {features.map((f, i) => (
-              <button key={f.name} role="tab" aria-selected={i === active} onClick={() => setActive(i)} className={`thumb group w-[7.5rem] shrink-0 snap-start text-left sm:w-auto ${i === active ? "is-active" : ""}`}>
+              <button key={f.id} role="tab" aria-selected={i === active} onClick={() => setActive(i)} className={`thumb group w-[7.5rem] shrink-0 snap-start text-left sm:w-auto ${i === active ? "is-active" : ""}`}>
                 <span className="block overflow-hidden rounded-[2px]"><PendantPicture image={f.image} alt="" sizes="180px" className="aspect-[4/3] w-full object-cover" style={{ objectPosition: f.focus }} /></span>
                 <span className="mt-3 flex items-baseline gap-2 font-ui text-[15px]"><span className="text-gold-deep">0{i + 1}</span><span className="text-foreground">{f.name}</span></span>
               </button>
@@ -313,14 +321,14 @@ function Home() {
           <SvaraaEmblem className="absolute -left-40 top-1/2 size-[560px] -translate-y-1/2 text-gold opacity-[.07]" />
           <div className="page-shell relative">
             <div data-reveal className="max-w-[980px]">
-              <p className="numeral">03</p><p className="eyebrow mt-2">Why svaraa</p>
-              <h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-[5.2rem]">Care should preserve<br /><em className="text-gold-deep">independence.</em></h2>
+              <p className="numeral">03</p><p className="eyebrow mt-2">{t("why.eyebrow")}</p>
+              <h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-[5.2rem]">{rich("why.heading", "text-gold-deep")}</h2>
             </div>
             <div className="mt-20 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
-              {[["For parents", "A familiar pendant that fits into personal routines and keeps everyday assistance close."], ["For their children", "A thoughtful way to stay connected through supported updates and alerts, while respecting a parent's independence."], ["For daily stillness", "Prayer, reflection and spoken interaction in a pendant that asks for less screen time."]].map(([t, d], i) => (
-                <div data-reveal key={t} className="bg-pearl p-8 lg:p-12" style={{ transitionDelay: `${i * 80}ms` }}>
+              {[1, 2, 3].map((n) => [t(`why.${n}.title`), t(`why.${n}.body`)]).map(([title, d], i) => (
+                <div data-reveal key={i} className="bg-pearl p-8 lg:p-12" style={{ transitionDelay: `${i * 80}ms` }}>
                   <p className="font-display text-6xl italic text-gold">{["i", "ii", "iii"][i]}</p>
-                  <h3 className="mt-6 text-3xl text-primary">{t}</h3>
+                  <h3 className="mt-6 text-3xl text-primary">{title}</h3>
                   <p className="mt-3 text-foreground/75">{d}</p>
                 </div>
               ))}
@@ -333,11 +341,11 @@ function Home() {
           <div aria-hidden className="jali jali-dark absolute inset-0" />
           <div className="page-shell relative grid items-center gap-14 lg:grid-cols-[1.1fr_.9fr] lg:gap-20">
             <div data-reveal>
-              <p className="numeral !text-gold-light">04</p><p className="eyebrow mt-2 !text-gold-light">Quietly advanced</p>
-              <h2 className="mt-5 text-5xl leading-[1.05] lg:text-7xl">Quiet technology.<br /><em className="text-gold-light">Thoughtfully</em> held.</h2>
-              <p className="mt-8 max-w-[560px] text-xl leading-[1.7] text-primary-foreground/85">The svaraa pendant brings supported voice, memory, wellbeing and family-alert features together in one screenless device. The experience is designed around simple spoken interaction and everyday familiarity.</p>
+              <p className="numeral !text-gold-light">04</p><p className="eyebrow mt-2 !text-gold-light">{t("tech.eyebrow")}</p>
+              <h2 className="mt-5 text-5xl leading-[1.05] lg:text-7xl">{rich("tech.heading", "text-gold-light")}</h2>
+              <p className="mt-8 max-w-[560px] text-xl leading-[1.7] text-primary-foreground/85">{rich("tech.body", "text-gold-light")}</p>
               <div className="mt-10 grid max-w-[560px] grid-cols-3 border-t border-gold/40 pt-8">
-                {[["Screenless", "by design"], ["Spoken", "interaction"], ["Family", "alert support"]].map(([a, b]) => <div key={a}><p className="font-display text-3xl text-gold-light lg:text-4xl">{a}</p><p className="font-ui text-[15px] text-primary-foreground/70">{b}</p></div>)}
+                {[1, 2, 3].map((n) => [t(`tech.${n}.value`), t(`tech.${n}.label`)]).map(([a, b], i) => <div key={i}><p className="font-display text-3xl text-gold-light lg:text-4xl">{a}</p><p className="font-ui text-[15px] text-primary-foreground/70">{b}</p></div>)}
               </div>
             </div>
             <div data-reveal className="tech-frame">
@@ -350,16 +358,16 @@ function Home() {
         <section id="makers" className="section-pad">
           <div className="page-shell grid gap-16 lg:grid-cols-[.9fr_1.1fr]">
             <div data-reveal>
-              <p className="numeral">05</p><p className="eyebrow mt-2">Built by</p>
-              <h2 className="mt-5 text-5xl leading-[1.08] text-primary lg:text-6xl">Two Indian-origin graduates, building from their Ivy League dorms.</h2>
-              <p className="mt-6 max-w-[460px] text-xl text-foreground/80">Raised on bhajans at dawn, trained on the hardest problems in computing. svaraa is where both halves meet.</p>
+              <p className="numeral">05</p><p className="eyebrow mt-2">{t("makers.eyebrow")}</p>
+              <h2 className="mt-5 text-5xl leading-[1.08] text-primary lg:text-6xl">{rich("makers.heading", "text-gold-deep")}</h2>
+              <p className="mt-6 max-w-[460px] text-xl text-foreground/80">{rich("makers.body", "text-gold-deep")}</p>
             </div>
             <div className="grid gap-8 sm:grid-cols-2">
-              {[[founder01, "Founder 01"], [founder02, "Founder 02"]].map(([img, name], i) => (
-                <article data-reveal key={name} className="lift-card" style={{ transitionDelay: `${i * 80}ms` }}>
+              {([[founder01, t("makers.1.name"), t("makers.1.note")], [founder02, t("makers.2.name"), t("makers.2.note")]] as const).map(([img, name, note], i) => (
+                <article data-reveal key={i} className="lift-card" style={{ transitionDelay: `${i * 80}ms` }}>
                   <img src={img} alt={`Symbolic avatar for ${name}`} width={816} height={816} loading="lazy" className="arch aspect-[4/5] w-full object-cover" />
                   <h3 className="mt-6 text-3xl text-primary">{name}</h3>
-                  <p className="font-ui text-[15px] text-muted-foreground">Full introduction coming soon</p>
+                  <p className="font-ui text-[15px] text-muted-foreground">{note}</p>
                 </article>
               ))}
             </div>
@@ -370,22 +378,22 @@ function Home() {
         <section id="waitlist" className="section-pad border-t border-border bg-champagne">
           <div className="page-shell grid gap-14 lg:grid-cols-2 lg:gap-24">
             <div data-reveal>
-              <p className="numeral">06</p><p className="eyebrow mt-2">An early invitation</p>
-              <h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-[4.2rem]">Be among the first to discover the svaraa pendant.</h2>
-              <p className="mt-6 max-w-[480px] text-xl text-foreground/80">Join the early-access list for launch updates and demonstration details. Exploring svaraa for a parent? Leave your contact details and our team will help you take the next step.</p>
+              <p className="numeral">06</p><p className="eyebrow mt-2">{t("waitlist.eyebrow")}</p>
+              <h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-[4.2rem]">{rich("waitlist.heading", "text-gold-deep")}</h2>
+              <p className="mt-6 max-w-[480px] text-xl text-foreground/80">{rich("waitlist.body", "text-gold-deep")}</p>
               <div className="mt-10 hidden overflow-hidden rounded-[2px] md:block">
                 <PendantPicture image={pendantImages.pendantInvitation} alt="svaraa pendant and rudraksha mala draped over curved ivory stone" sizes="(min-width: 1024px) 560px, 90vw" className="aspect-[16/10] w-full object-cover object-[43%_64%]" />
               </div>
             </div>
             <form data-reveal onSubmit={submitWaitlist} noValidate className="grid self-start gap-6 border border-border bg-background p-8 lg:p-12">
-              <label className="font-ui text-[15px] text-foreground">Your name<input name="name" required maxLength={100} autoComplete="name" className="field" /></label>
-              <label className="font-ui text-[15px] text-foreground">Phone number
+              <label className="font-ui text-[15px] text-foreground">{t("waitlist.name")}<input name="name" required maxLength={100} autoComplete="name" className="field" /></label>
+              <label className="font-ui text-[15px] text-foreground">{t("waitlist.phone")}
                 <span className="mt-2 flex"><span className="flex h-14 items-center border border-r-0 border-input bg-pearl px-4 text-lg">+91</span><input name="phone" type="tel" required maxLength={20} autoComplete="tel" className="field !mt-0" /></span>
               </label>
-              <label className="font-ui text-[15px] text-foreground">Email address<input name="email" type="email" required maxLength={255} autoComplete="email" className="field" /></label>
-              <button type="submit" disabled={status === "sending"} className="btn btn-primary mt-2 w-full justify-center">{status === "sending" ? "Reserving" : "Reserve my place"}</button>
-              {status === "done" && <p role="status" className="text-primary">Thank you. You are on the list, and we will be in touch personally.</p>}
-              {status === "error" && <p role="alert" className="text-destructive">Please check your name, number and email, then try once more.</p>}
+              <label className="font-ui text-[15px] text-foreground">{t("waitlist.email")}<input name="email" type="email" required maxLength={255} autoComplete="email" className="field" /></label>
+              <button type="submit" disabled={status === "sending"} className="btn btn-primary mt-2 w-full justify-center">{status === "sending" ? t("waitlist.sending") : t("waitlist.button")}</button>
+              {status === "done" && <p role="status" className="text-primary">{t("waitlist.success")}</p>}
+              {status === "error" && <p role="alert" className="text-destructive">{t("waitlist.error")}</p>}
             </form>
           </div>
         </section>
@@ -396,13 +404,13 @@ function Home() {
           <div className="flex flex-col justify-between gap-10 border-b border-gold/30 pb-12 md:flex-row md:items-end">
             <div>
               <Brand reverse />
-              <p className="mt-5 font-display text-2xl italic text-gold-light">Sound. Stillness. Self.</p>
-              <p className="mt-3 max-w-[420px] font-ui text-[15px] text-primary-foreground/70">A screenless pendant for everyday care, voice assistance and family connection.</p>
+              <p className="mt-5 font-display text-2xl italic text-gold-light">{t("footer.tagline")}</p>
+              <p className="mt-3 max-w-[420px] font-ui text-[15px] text-primary-foreground/70">{t("footer.description")}</p>
             </div>
             <nav className="flex flex-wrap gap-8 font-ui text-[15px] text-primary-foreground/80" aria-label="Footer">{nav.map(([h, l]) => <a key={h} href={h}>{l}</a>)}</nav>
           </div>
           <div className="flex flex-col justify-between gap-4 pt-8 font-ui text-[15px] text-primary-foreground/60 md:flex-row">
-            <p>© 2026 svaraa. All rights reserved.</p>
+            <p>{t("footer.copyright")}</p>
             <p><a href="https://superstar.wtf/shawm" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-primary-foreground/80">Tech by Shawm at Superstar Tech Inc <ArrowUpRight size={15} /></a></p>
           </div>
         </div>
