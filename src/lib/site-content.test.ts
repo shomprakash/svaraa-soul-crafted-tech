@@ -1,3 +1,4 @@
+// @ts-ignore bun provides this module when running `bun test`
 import { describe, expect, test } from "bun:test";
 import { credentialsMatch } from "./cms-auth.server";
 import { defaultContent, resolveContent } from "./site-content";
