@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Activity, ArrowLeft, ArrowRight, ArrowUpRight, BatteryMedium, Droplets, Languages, Menu, Radio, ShieldCheck, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Brand, SvaraaEmblem } from "@/components/Brand";
+import { ModeArtwork, ModeGlyph } from "@/components/ModeArtwork";
 import { PendantPicture } from "@/components/PendantPicture";
 import { RichText, plainText } from "@/components/RichText";
 import { getSiteContent } from "@/lib/content.functions";
@@ -54,16 +55,6 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const modeVisuals: Record<string, { image: (typeof pendantImages)[keyof typeof pendantImages]; focus: string; alt: string }> = {
-  recite: { image: pendantImages.modeRecite, focus: "61% 66%", alt: "svaraa pendant on a rudraksha mala resting on draped ivory silk" },
-  respond: { image: pendantImages.modeRespond, focus: "65% 60%", alt: "svaraa pendant leaning against carved travertine in warm light" },
-  remind: { image: pendantImages.modeRemind, focus: "65% 60%", alt: "svaraa pendant and rudraksha mala draped over curved ivory stone" },
-  rescue: { image: pendantImages.modeRescue, focus: "71% 66%", alt: "svaraa pendant on a rudraksha mala against a deep plum backdrop" },
-  recall: { image: pendantImages.modeRecall, focus: "65% 75%", alt: "svaraa pendant and rudraksha beads on a plain ivory surface" },
-  repository: { image: pendantImages.modeRepository, focus: "66% 52%", alt: "Close view of the svaraa pendant's floral face on travertine" },
-  riddle: { image: pendantImages.modeRiddle, focus: "65% 66%", alt: "svaraa pendant on a sandstone plinth, with arches softly behind" },
-};
-
 const lifeMoments = [
   { key: "life.1", image: pendantImages.lifeWalk, focus: "50% 30%", alt: "A woman in her fifties walks down stone steps wearing the svaraa pendant" },
   { key: "life.2", image: pendantImages.lifeTrack, focus: "55% 30%", alt: "A man in his forties stretches on a running track, wearing the svaraa pendant" },
@@ -86,7 +77,7 @@ function Home() {
   const c = useMemo(() => resolveContent(overrides), [overrides]);
   const t = (key: string) => c[key] ?? "";
   const rich = (key: string, accent?: string) => <RichText text={t(key)} accentClassName={accent} />;
-  const features = modeIds.map((id) => ({ id, name: t(`modes.${id}.name`), dev: t(`modes.${id}.dev`), line: t(`modes.${id}.line`), body: t(`modes.${id}.body`), ...modeVisuals[id]! }));
+  const features = modeIds.map((id) => ({ id, name: t(`modes.${id}.name`), dev: t(`modes.${id}.dev`), line: t(`modes.${id}.line`), body: t(`modes.${id}.body`), tag: t(`modes.${id}.tag`) }));
   const careViews = careIcons.map((icon, i) => ({ icon, label: t(`care.tab${i + 1}.label`), value: t(`care.tab${i + 1}.value`), note: t(`care.tab${i + 1}.note`) }));
   const [active, setActive] = useState(3);
   const [careView, setCareView] = useState(0);
@@ -278,41 +269,51 @@ function Home() {
           </div>
         </section>
 
-        {/* SEVEN */}
-        <section id="seven" className="section-pad">
-          <div className="page-shell mb-12 flex flex-wrap items-end justify-between gap-8" data-reveal>
-            <div><p className="numeral">02</p><p className="eyebrow mt-2">{t("modes.eyebrow")}</p><h2 className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">{rich("modes.heading", "text-gold-deep")}</h2></div>
-            <div className="flex items-center gap-4">
-              <span className="font-ui text-lg text-muted-foreground"><span className="text-primary">0{active + 1}</span> / 07</span>
-              <button onClick={() => go(-1)} aria-label="Previous mode" className="round-btn"><ArrowLeft /></button>
-              <button onClick={() => go(1)} aria-label="Next mode" className="round-btn round-btn-solid"><ArrowRight /></button>
-            </div>
+        {/* SEVEN MODES: FEATURES */}
+        <section id="seven" className="pt-24 lg:pt-32" aria-labelledby="seven-heading">
+          <div className="page-shell mb-14 grid items-end gap-8 lg:grid-cols-[1.3fr_1fr]" data-reveal>
+            <div><p className="numeral">02</p><p className="eyebrow mt-2">{t("modes.eyebrow")}</p><h2 id="seven-heading" className="mt-5 text-5xl leading-[1.05] text-primary lg:text-7xl">{rich("modes.heading", "text-gold-deep")}</h2></div>
+            <p className="max-w-[460px] text-xl text-foreground/80 lg:justify-self-end">{rich("modes.intro", "text-gold-deep")}</p>
           </div>
 
-          <div className="relative w-full overflow-hidden bg-aubergine-deep lg:h-[78svh] lg:min-h-[560px]">
-            <div className="relative aspect-[4/3] sm:aspect-[16/9] lg:absolute lg:inset-0 lg:aspect-auto">
-              {features.map((f, i) => (
-                <PendantPicture key={f.id} image={f.image} alt={i === active ? f.alt : ""} sizes="100vw" className={`slide-img absolute inset-0 size-full object-cover ${i === active ? "is-active" : ""}`} style={{ objectPosition: f.focus }} />
-              ))}
-              <div className="absolute inset-0 bg-gradient-to-t from-aubergine-deep/70 via-transparent to-transparent lg:bg-gradient-to-r lg:from-aubergine-deep/90 lg:via-aubergine-deep/40" />
-            </div>
-            <div className="page-shell relative flex pb-12 pt-8 lg:h-full lg:items-center lg:py-0">
-              <div key={feature.id} className="reveal max-w-[560px] text-primary-foreground" aria-live="polite">
-                <p className="devanagari text-3xl text-gold-light">{feature.dev}</p>
-                <h3 className="mt-2 text-6xl leading-none sm:text-7xl lg:text-[7.5rem]">{feature.name}</h3>
-                <p className="mt-5 font-display text-3xl italic text-gold-light">{feature.line}</p>
-                <p className="mt-5 text-lg leading-[1.7] text-primary-foreground/85 lg:text-xl">{feature.body}</p>
+          <div className="mode-stage relative overflow-hidden text-primary-foreground">
+            <div aria-hidden className="jali jali-dark absolute inset-0" />
+            <div className="page-shell relative grid items-center gap-10 py-14 lg:min-h-[640px] lg:grid-cols-[1fr_minmax(0,500px)] lg:gap-16 lg:py-20">
+              <div className="order-1 mx-auto w-full max-w-[300px] sm:max-w-[380px] lg:order-2 lg:max-w-none">
+                <ModeArtwork mode={feature.id} />
+              </div>
+              <div className="order-2 lg:order-1" role="tabpanel" id="mode-panel" aria-labelledby={`mode-tab-${feature.id}`}>
+                <div key={feature.id} className="reveal max-w-[560px]" aria-live="polite">
+                  <p className="flex flex-wrap items-center gap-3 font-ui text-[15px]">
+                    <span className="border border-gold-light/50 px-3 py-1 uppercase tracking-wide text-gold-light">Feature 0{active + 1}</span>
+                    <span className="text-primary-foreground/75">{feature.tag}</span>
+                  </p>
+                  <p className="devanagari mt-8 text-3xl text-gold-light">{feature.dev}</p>
+                  <h3 className="mt-2 text-6xl leading-none sm:text-7xl lg:text-[7rem]">{feature.name}</h3>
+                  <p className="mt-5 font-display text-3xl italic text-gold-light">{feature.line}</p>
+                  <p className="mt-5 text-lg leading-[1.7] text-primary-foreground/85 lg:text-xl">{feature.body}</p>
+                </div>
+                <div className="mt-10 flex items-center gap-5">
+                  <button type="button" onClick={() => go(-1)} aria-label="Previous feature" className="mode-round"><ArrowLeft size={20} /></button>
+                  <button type="button" onClick={() => go(1)} aria-label="Next feature" className="mode-round mode-round-solid"><ArrowRight size={20} /></button>
+                  <div className="ml-2 flex items-center gap-2" aria-hidden>
+                    {features.map((f, i) => <span key={f.id} className={`h-px transition-all duration-500 ${i === active ? "w-10 bg-gold-light" : "w-4 bg-primary-foreground/30"}`} />)}
+                  </div>
+                  <span className="font-ui text-[15px] text-primary-foreground/70"><span className="text-gold-light">0{active + 1}</span> / 07</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="page-shell mt-6 flex snap-x gap-3 overflow-x-auto pb-2 sm:grid sm:grid-cols-7 sm:overflow-visible sm:pb-0" role="tablist" aria-label="Choose a pendant mode">
-            {features.map((f, i) => (
-              <button key={f.id} role="tab" aria-selected={i === active} onClick={() => setActive(i)} className={`thumb group w-[7.5rem] shrink-0 snap-start text-left sm:w-auto ${i === active ? "is-active" : ""}`}>
-                <span className="block overflow-hidden rounded-[2px]"><PendantPicture image={f.image} alt="" sizes="180px" className="aspect-[4/3] w-full object-cover" style={{ objectPosition: f.focus }} /></span>
-                <span className="mt-3 flex items-baseline gap-2 font-ui text-[15px]"><span className="text-gold-deep">0{i + 1}</span><span className="text-foreground">{f.name}</span></span>
-              </button>
-            ))}
+            <div className="page-shell relative">
+              <div className="-mx-4 flex snap-x overflow-x-auto px-4 sm:mx-0 sm:grid sm:grid-cols-7 sm:overflow-visible sm:px-0" role="tablist" aria-label="Choose a feature">
+                {features.map((f, i) => (
+                  <button key={f.id} id={`mode-tab-${f.id}`} type="button" role="tab" aria-selected={i === active} aria-controls="mode-panel" onClick={() => setActive(i)} className={`mode-tab flex w-[8.5rem] shrink-0 snap-start flex-col items-start gap-3 px-3 pb-6 pt-5 text-left sm:w-auto ${i === active ? "is-active" : ""}`}>
+                    <ModeGlyph mode={f.id} className="mode-tab-glyph" />
+                    <span className="flex items-baseline gap-2 font-ui text-[15px]"><span className="opacity-70">0{i + 1}</span><span>{f.name}</span></span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 

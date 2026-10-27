@@ -294,7 +294,6 @@
 .mode-round:hover { background:color-mix(in oklab,var(--gold) 20%,transparent); }
 .mode-round-solid { background:var(--gold-light); color:var(--aubergine-deep); border-color:var(--gold-light); }
 .mode-round-solid:hover { background:var(--primary-foreground); }
-.thumb.is-active { border-color:var(--primary); }
 
 .lift-card { transition:transform .6s cubic-bezier(.22,1,.36,1), box-shadow .6s; }
 .lift-card:hover { transform:translateY(-4px); box-shadow:0 24px 50px -30px var(--primary); }
