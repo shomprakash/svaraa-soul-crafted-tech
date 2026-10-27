@@ -3,7 +3,7 @@ import { useSession } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
-import { credentialsMatch } from "./cms-auth";
+import { credentialsMatch } from "./cms-auth.server";
 import { contentKeys, defaultContent, MAX_CONTENT_LENGTH } from "./site-content";
 
 type CmsSession = { editor?: boolean };
