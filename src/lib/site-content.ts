@@ -8,14 +8,14 @@ export type ContentSection = { id: string; title: string; description: string; g
 
 const f = (key: string, label: string, value: string, long = false): ContentField => ({ key, label, value, long });
 
-const modes: [string, string, string, string, string][] = [
-  ["recite", "Recite", "पाठ", "Your daily practice, on time.", "Bring prayer and reflection into your routine with familiar audio, played through your svaraa pendant at your chosen times."],
-  ["respond", "Respond", "उत्तर", "Answers, simply spoken.", "Speak to your svaraa pendant for everyday questions and spoken answers in supported languages."],
-  ["remind", "Remind", "स्मरण", "Care that arrives gently.", "Let your pendant offer gentle spoken reminders for the routines and appointments you have set."],
-  ["rescue", "Rescue", "रक्षा", "Support, closer at hand.", "The pendant is designed to recognise possible falls and support alerts to connected family members. Voice assistance helps make asking for support more accessible."],
-  ["recall", "Recall", "स्मृति", "A second memory for life's details.", "Use your pendant's voice features to revisit the personal details and moments you have chosen to save."],
-  ["repository", "Repository", "कोश", "Information, ready to be heard.", "Access supported audio content and information through your pendant, with spoken interaction at the centre of the experience."],
-  ["riddle", "Riddle", "पहेली", "A little curiosity, every day.", "Enjoy spoken riddles, trivia and word games through your pendant, bringing moments of curiosity into the day."],
+const modes: [string, string, string, string, string, string][] = [
+  ["recite", "Recite", "पाठ", "Prayer and reflection", "Your daily practice, on time.", "Bring prayer and reflection into your routine with familiar audio, played through your svaraa pendant at your chosen times."],
+  ["respond", "Respond", "उत्तर", "Spoken answers", "Answers, simply spoken.", "Speak to your svaraa pendant for everyday questions and spoken answers in supported languages."],
+  ["remind", "Remind", "स्मरण", "Gentle reminders", "Care that arrives gently.", "Let your pendant offer gentle spoken reminders for the routines and appointments you have set."],
+  ["rescue", "Rescue", "रक्षा", "Safety and alerts", "Support, closer at hand.", "The pendant is designed to recognise possible falls and support alerts to connected family members. Voice assistance helps make asking for support more accessible."],
+  ["recall", "Recall", "स्मृति", "Personal memory", "A second memory for life's details.", "Use your pendant's voice features to revisit the personal details and moments you have chosen to save."],
+  ["repository", "Repository", "कोश", "Knowledge and audio", "Information, ready to be heard.", "Access supported audio content and information through your pendant, with spoken interaction at the centre of the experience."],
+  ["riddle", "Riddle", "पहेली", "Play and curiosity", "A little curiosity, every day.", "Enjoy spoken riddles, trivia and word games through your pendant, bringing moments of curiosity into the day."],
 ];
 
 export const modeIds = modes.map(([id]) => id);
@@ -130,14 +130,16 @@ export const contentSections: ContentSection[] = [
     description: "The heading and the text for each of the seven modes.",
     groups: [
       { title: "Heading", fields: [
-        f("modes.eyebrow", "Small label", "Seven modes, one pendant"),
+        f("modes.eyebrow", "Small label", "Features"),
         f("modes.heading", "Section heading", "Everyday support.\nWithin easy reach.", true),
+        f("modes.intro", "Introduction", "Seven modes, one pendant. Choose a mode to see how it helps through the day.", true),
       ] },
-      ...modes.map(([id, name, dev, line, body], i) => ({
+      ...modes.map(([id, name, dev, tag, line, body], i) => ({
         title: `Mode ${i + 1}: ${name}`,
         fields: [
           f(`modes.${id}.name`, "Name", name),
           f(`modes.${id}.dev`, "Hindi name", dev),
+          f(`modes.${id}.tag`, "Feature type", tag),
           f(`modes.${id}.line`, "Short line", line),
           f(`modes.${id}.body`, "Description", body, true),
         ],
