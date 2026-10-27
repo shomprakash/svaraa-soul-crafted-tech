@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 
 /** Renders editable copy: new lines become line breaks, *words* become accented italics. */
-export function RichText({ text, accentClassName }: { text: string; accentClassName?: string }) {
+export function RichText({ text, accentClassName }: { text: string; accentClassName?: string | undefined }) {
   const lines = text.replace(/\r\n/g, "\n").split("\n");
   return (
     <>
