@@ -10,6 +10,76 @@ import emblemLight from "@/assets/brand-library/svaraa-emblem-for-light.png.asse
 import emblemDark from "@/assets/brand-library/svaraa-emblem-for-dark.png.asset.json";
 import wordmarkLight from "@/assets/brand-library/svaraa-wordmark-for-light.png.asset.json";
 import wordmarkDark from "@/assets/brand-library/svaraa-wordmark-for-dark.png.asset.json";
+import light01 from "@/assets/brand-library/colour-sets/svaraa-logo-light-01-maroon-antique-gold.png.asset.json";
+import light02 from "@/assets/brand-library/colour-sets/svaraa-logo-light-02-oxblood-monotone.png.asset.json";
+import light03 from "@/assets/brand-library/colour-sets/svaraa-logo-light-03-bronze-and-gold.png.asset.json";
+import light04 from "@/assets/brand-library/colour-sets/svaraa-logo-light-04-wine-with-gold-centre.png.asset.json";
+import light05 from "@/assets/brand-library/colour-sets/svaraa-logo-light-05-ink-plum-deep-gold.png.asset.json";
+import dark01 from "@/assets/brand-library/colour-sets/svaraa-logo-dark-01-gold-leaf.png.asset.json";
+import dark02 from "@/assets/brand-library/colour-sets/svaraa-logo-dark-02-champagne-rose-gold.png.asset.json";
+import dark03 from "@/assets/brand-library/colour-sets/svaraa-logo-dark-03-blush-and-gold.png.asset.json";
+import dark04 from "@/assets/brand-library/colour-sets/svaraa-logo-dark-04-ivory-gold-centre.png.asset.json";
+import dark05 from "@/assets/brand-library/colour-sets/svaraa-logo-dark-05-gold-and-ivory.png.asset.json";
+
+type ColourSet = {
+  title: string;
+  src: string;
+  fileName: string;
+  /** Sample surface the logo is shown on; brand asset data, not UI theming. */
+  surface: { name: string; hex: string };
+  /** Logo inks, listed for designers and printers. */
+  inks: { name: string; hex: string }[];
+  use: string;
+};
+
+const fileOf = (a: { original_filename: string }) => a.original_filename;
+
+const lightSets: ColourSet[] = [
+  { title: "Maroon and antique gold", src: light01.url, fileName: fileOf(light01), surface: { name: "Ivory", hex: "#F6F0E6" }, inks: [{ name: "Maroon", hex: "#5C1A2B" }, { name: "Antique gold", hex: "#A07A34" }], use: "The everyday choice for ivory, cream and paper." },
+  { title: "Oxblood monotone", src: light02.url, fileName: fileOf(light02), surface: { name: "Sand", hex: "#EFE3CF" }, inks: [{ name: "Oxblood", hex: "#6A1E2C" }], use: "For warm beige and sand, where gold would fade." },
+  { title: "Bronze and gold", src: light03.url, fileName: fileOf(light03), surface: { name: "White", hex: "#FFFFFF" }, inks: [{ name: "Bronze", hex: "#5E3F1C" }, { name: "Gold", hex: "#B08532" }], use: "For bright white, packaging and product cards." },
+  { title: "Wine with a gold centre", src: light04.url, fileName: fileOf(light04), surface: { name: "Blush", hex: "#F4E6E2" }, inks: [{ name: "Wine", hex: "#7A2638" }, { name: "Gold centre", hex: "#B08532" }], use: "For blush and soft rose, invitations and gifting." },
+  { title: "Ink plum and deep gold", src: light05.url, fileName: fileOf(light05), surface: { name: "Champagne stone", hex: "#E9DCC4" }, inks: [{ name: "Ink plum", hex: "#24111D" }, { name: "Deep gold", hex: "#86642A" }], use: "Highest contrast, for stone, textured or busy light surfaces." },
+];
+
+const darkSets: ColourSet[] = [
+  { title: "Gold leaf monotone", src: dark01.url, fileName: fileOf(dark01), surface: { name: "Deep aubergine", hex: "#2A0F22" }, inks: [{ name: "Gold leaf", hex: "#D2AE62" }], use: "The signature evening version, for aubergine and black." },
+  { title: "Champagne and rose gold", src: dark02.url, fileName: fileOf(dark02), surface: { name: "Charcoal", hex: "#1B1416" }, inks: [{ name: "Champagne", hex: "#F2E4C9" }, { name: "Rose gold", hex: "#D6A07E" }], use: "For charcoal, black and night photography." },
+  { title: "Blush and gold", src: dark03.url, fileName: fileOf(dark03), surface: { name: "Maroon", hex: "#4A1424" }, inks: [{ name: "Blush", hex: "#EED3CE" }, { name: "Gold", hex: "#C9A04E" }], use: "Made for maroon and wine surfaces." },
+  { title: "Ivory with a gold centre", src: dark04.url, fileName: fileOf(dark04), surface: { name: "Bronze", hex: "#3B2A1E" }, inks: [{ name: "Ivory", hex: "#FBF6EC" }, { name: "Gold centre", hex: "#D2AE62" }], use: "For brown, bronze and warm wood tones." },
+  { title: "Gold word, ivory emblem", src: dark05.url, fileName: fileOf(dark05), surface: { name: "Plum", hex: "#3D1A3A" }, inks: [{ name: "Gold", hex: "#D8B66E" }, { name: "Ivory", hex: "#F4EAD8" }], use: "For plum and violet, where the name should lead." },
+];
+
+function ColourSetCard({ set }: { set: ColourSet }) {
+  return (
+    <article className="flex flex-col">
+      <div
+        className="grid aspect-[16/9] place-items-center overflow-hidden border border-border"
+        style={{ backgroundColor: set.surface.hex }}
+      >
+        <img src={set.src} alt={`svaraa logo, ${set.title}, on ${set.surface.name.toLowerCase()}`} className="max-h-[62%] max-w-[76%] object-contain" loading="lazy" />
+      </div>
+      <div className="mt-4 flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h3 className="text-[1.6rem] leading-tight text-primary">{set.title}</h3>
+          <p className="mt-1 font-ui text-[15px] leading-relaxed text-muted-foreground">{set.use}</p>
+          <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-2 font-ui text-[13px] text-foreground/70">
+            {set.inks.map((ink) => (
+              <li key={ink.name} className="flex items-center gap-2">
+                <span aria-hidden className="size-3.5 rounded-full border border-border" style={{ backgroundColor: ink.hex }} />
+                {ink.name} <span className="tracking-wide text-muted-foreground">{ink.hex}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <a href={set.src} download={set.fileName} aria-label={`Download ${set.title}`} title={`Download ${set.fileName}`} className="round-btn shrink-0">
+          <Download size={20} />
+        </a>
+      </div>
+    </article>
+  );
+}
+
 
 export const Route = createFileRoute("/assets")({
   head: () => ({
