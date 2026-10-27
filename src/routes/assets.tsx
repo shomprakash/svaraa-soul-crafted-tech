@@ -203,7 +203,7 @@ function AssetsPage() {
           </div>
         </section>
 
-        <section className="section-pad border-t border-border bg-pearl">
+        <section className="section-pad border-t border-border">
           <div className="page-shell">
             <div className="max-w-[760px]">
               <p className="numeral">02</p>
@@ -217,7 +217,7 @@ function AssetsPage() {
           </div>
         </section>
 
-        <section className="section-pad border-t border-border">
+        <section className="section-pad border-t border-border bg-pearl">
           <div className="page-shell">
             <div className="max-w-[840px]">
               <p className="numeral">03</p>
